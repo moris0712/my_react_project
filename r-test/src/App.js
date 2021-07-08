@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import logo from './logo.svg';
 import './App.css';
 import Clock from './components/Clock';
-import Video from './video/Main.mp4';
+import Used_Tool from './components/Used_Tool';
+import Profile from './components/Profile';
 import Slider from "react-slick";
 import "./slick.css"; 
 import "./slick-theme.css";
@@ -14,19 +15,9 @@ import main_img4 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-42.jpeg';
 import main_img5 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-44.png';
 import main_img6 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-47.jpeg';
 
-function header(something) {
-  return "hello " + something;
-}
 
-function User_component() { // 사용자정의 컴포넌트는 항상 시작 대문자로 되야함
-  return (
-    <div>
-      <p>I'm user_define_component</p>
-    </div>
-  );
-}
 
-function Use_props(props) {
+function Use_props(props) { // 사용자정의 컴포넌트는 항상 시작 대문자로 되야함
   return (
     <div>
       <p>my name: {props.name}</p>
@@ -64,7 +55,6 @@ class Main extends Component {
 
   render() {
 
-    const element = "하이";
 
     // 슬라이드 설정
     const settings = { 
@@ -77,8 +67,6 @@ class Main extends Component {
       autoplay: true,
       autoplaySpeed: 2500
     };
-
-
 
 
     return (
@@ -103,8 +91,6 @@ class Main extends Component {
             <div className="main_img_div">
               <img className="main_img" src={main_img6} />
             </div>
-
-            
           </Slider>
 
           <div id="main_p">
@@ -129,23 +115,14 @@ class Main extends Component {
           </div>
         </div>
 
-          <p>
-            {element}
-            <p>아몰랑 {header('요를레히이')}</p>
+        <Profile/>
 
-            <User_component />
-            <Use_props name={"박준영"} age={"25"} address={"서울시 노원구 상계 6,7동"} />
-          </p>
-
-
-          <button onClick={this.current_Time}>
+          {/* <button onClick={this.current_Time}>
             현재 시간 {this.state.time_on ? 'ON' : 'OFF'}
           </button>
 
-          {this.state.time_on ? <Clock /> : ''}
-
-     
-
+          { this.state.time_on ? <Clock /> : '' } */}
+          
       </div>
     );
   }

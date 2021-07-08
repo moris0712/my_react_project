@@ -1,16 +1,40 @@
 .App {
   text-align: center;
-  
 }
 
 .App-logo {
-  height: 40vmin;
   pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
+  }
+  .Css-logo {
+    animation: css-logo-jump infinite 3s linear;
+  }
+  #main_p2 , #profile_p2{
+    animation: fade_in_out infinite 2s alternate;
+  }
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes css-logo-jump {
+  0%, 100%{
+    opacity: 0;
+    animation-timing-function: ease-out;
+  }
+  50%{
+    opacity: 1;
+    animation-timing-function: ease-in;
   }
 }
 
@@ -29,11 +53,114 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
+
+
+
+#main_p2_div_div, #profile_p2_div_div {
+  text-align: left;
+}
+#main_p2_div , #profile_p2_div{
+  color: #ffffff;
+  margin: 0 auto;
+}
+#main_p2_div{
+  font-size: 3em;
+
+}
+#profile_p2_div{
+  font-size: 2em;
+}
+#main_p2_div{
+  width: 720px;
+}
+#profile_p2_div{
+  width: 1280px;
+}
+#main_p2 , #profile_p2{
+  text-align: center;
+  font-size: 1.5em;
+}
+
+@keyframes fade_in_out {
   from {
-    transform: rotate(0deg);
+    color: white;
   }
   to {
-    transform: rotate(360deg);
+    color: aquamarine;;
   }
+}
+
+.logo{
+  height: 8rem;
+  vertical-align: middle;
+}
+.logo_span{
+  margin: 2rem 2rem 2rem 2rem;
+}
+
+#profile_img_div{
+  height: 20rem;
+  width: 20rem;
+  border-radius: 50%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+#profile_img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.profile{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.profile div:nth-child(1){
+  flex-grow: 1;
+}
+.profile div:nth-child(2){
+  flex-grow: 1;
+  padding-left: 5em;
+}
+
+
+
+#inform {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+#profile_inform{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#profile_inform div:nth-child(1){
+  flex-grow: 1;
+}
+#profile_inform div:nth-child(4){
+  flex-grow: 6;
+}
+
+
+#spec div:nth-child(n){
+  padding: 0.2em 0 0.2em 0;
+}
+
+
+.content_title{
+  font-weight: bold;
+}
+
+.career_inform{
+  display: flex;
+  margin-left: 2em;
+  justify-content: space-around;
+}
+
+.career_inform div:nth-child(3){
+  flex-grow: 6;
 }

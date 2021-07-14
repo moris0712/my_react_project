@@ -1,12 +1,16 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import logo from './logo.svg';
 import './App.css';
 import Clock from './components/Clock';
 import Used_Tool from './components/Used_Tool';
 import Profile from './components/Profile';
+import Learning from './components/Learning';
+import ScrollToTop from './components/ScrollToTop';
+
 import Slider from "react-slick";
 import "./slick.css"; 
 import "./slick-theme.css";
+
 
 import main_img1 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-30.jpeg';
 import main_img2 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-35.jpeg';
@@ -17,15 +21,33 @@ import main_img6 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-47.jpeg';
 
 
 
-function Use_props(props) { // 사용자정의 컴포넌트는 항상 시작 대문자로 되야함
+
+
+
+function FadeInSection(props) {
+  const [isVisible, setVisible] = React.useState(true);
+  const domRef = React.useRef();
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => setVisible(entry.isIntersecting));
+    });
+
+    const { current } = domRef;
+    observer.observe(current);
+
+    return () => observer.unobserve(current);
+  }, []);
   return (
-    <div>
-      <p>my name: {props.name}</p>
-      <p>my age: {props.age}</p>
-      <p>my address: {props.address}</p>
+    <div
+      className={`fade-in-section ${isVisible ? 'is-visible' : ''}`}
+      ref={domRef}
+    >
+      {props.children}
     </div>
   );
 }
+
+
 
 
 class Main extends Component {
@@ -38,11 +60,16 @@ class Main extends Component {
     // 콜백에서 `this`가 작동하려면 아래와 같이 바인딩 해주어야 합니다.
     this.current_Time = this.current_Time.bind(this);
 
+
     //console.log(this.state.time_on);
   }
 
-  componentDidMount() {
-    
+
+  reloadGif = () => {
+    this.setState({ loaded: '' })
+    setTimeout(() => {
+      this.setState({ loaded: this.state.gif })
+    }, 0)
   }
 
   current_Time() {
@@ -54,7 +81,6 @@ class Main extends Component {
   }
 
   render() {
-
 
     // 슬라이드 설정
     const settings = { 
@@ -69,60 +95,83 @@ class Main extends Component {
     };
 
 
+
     return (
-      <div className="App">
-        <div>  
-          <Slider {...settings}>
-            <div className="main_img_div">
-              <img className="main_img" src={main_img1} />
-            </div>
-            <div className="main_img_div">
-              <img className="main_img" src={main_img2} />
-            </div>
-            <div className="main_img_div">
-              <img className="main_img" src={main_img3} />
+      <div className="App" >
+          <div>  
+            {/* <FadeInSection>  */}
+              <Slider {...settings}>
+                <div className="main_img_div">
+                  <img className="main_img" src={main_img1} />
+                </div>
+                <div className="main_img_div">
+                  <img className="main_img" src={main_img2} />
+                </div>
+                <div className="main_img_div">
+                  <img className="main_img" src={main_img3} />
+                  </div>
+                <div className="main_img_div">
+                  <img className="main_img" src={main_img4} />
+                </div>
+                <div className="main_img_div">
+                  <img className="main_img" src={main_img5} />
+                </div>
+                <div className="main_img_div">
+                  <img className="main_img" src={main_img6} />
+                </div>
+              </Slider>
+
+              
+
+              <div id="main_p">
+                {/* <p>Am I Doing Well?</p> */}
+                <div class="hello">
+                  <span>H&nbsp;</span>
+                  <span>E&nbsp;</span>
+                  <span>L&nbsp;</span>
+                  <span>L&nbsp;</span>
+                  <span>O&nbsp;</span>
+                  <span>!&nbsp;</span>
+                </div>
+
+                <div id="symbol">
+                  <span> Thank</span>
+                  <span> You</span>
+                  <span> For</span>
+                  <span> Visit</span>
+                  <span> Moris' </span>
+                  <span> Page</span>
+                </div>
               </div>
-            <div className="main_img_div">
-              <img className="main_img" src={main_img4} />
-            </div>
-            <div className="main_img_div">
-              <img className="main_img" src={main_img5} />
-            </div>
-            <div className="main_img_div">
-              <img className="main_img" src={main_img6} />
-            </div>
-          </Slider>
-
-          <div id="main_p">
-            {/* <p>Am I Doing Well?</p> */}
-            <div class="hello">
-              <span>H&nbsp;</span>
-              <span>E&nbsp;</span>
-              <span>L&nbsp;</span>
-              <span>L&nbsp;</span>
-              <span>O&nbsp;</span>
-              <span>!&nbsp;</span>
-            </div>
-
-            <div id="symbol">
-              <span> Thank</span>
-              <span> You</span>
-              <span> For</span>
-              <span> Visit</span>
-              <span> Moris' </span>
-              <span> Page</span>
-            </div>
+            {/* </FadeInSection> */}
           </div>
-        </div>
+{/* 
+        <div className="blank">
+          <img src={this.state.loaded} />
+        </div> */}
 
-        <Profile/>
+
+          <div className="blank">
+            <hr />
+          </div>
+
+        {/* <FadeInSection> */}
+          <Profile />
+        {/* </FadeInSection> */}
+
+          <div className="blank">
+            <hr />
+          </div>
+
+        {/* <FadeInSection> */}
+          <Learning />
+        {/* </FadeInSection> */}
 
           {/* <button onClick={this.current_Time}>
             현재 시간 {this.state.time_on ? 'ON' : 'OFF'}
           </button>
 
           { this.state.time_on ? <Clock /> : '' } */}
-          
       </div>
     );
   }

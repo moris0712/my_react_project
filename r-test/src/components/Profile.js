@@ -49,8 +49,9 @@ class Profile extends Component {
                                         <p className="content">(주)다해줘테크 인턴</p>
                                         <p> Asp, Etherum, 웹 기획 등 경험</p>
                                         <p className="content">(주)솔루게이트 인턴</p>
-                                        <p> 음성 인공지능 Tacotron2 실행 및 한국어   </p>
-                                        <p> Mysql -> Postgresql migration   </p>
+                                        <p> 음성 합성 모델 Tacotron2 실행</p> 
+                                        <p> 한국어 음성 합성 모델 실행 </p>
+                                        <p> Mysql -&gt; Postgresql migration   </p>
                                     </div>
                                     <div></div>
                                 </div>

@@ -145,7 +145,7 @@ body{
     padding: 8;
     display: flex;
     position: fixed;
-    transition: all 0.6s;
+    transition: all 1s;
     top:0;
     z-index: 10; /* 값이 클수록 앞에 놓여짐 */
     justify-content:  space-between;
@@ -155,7 +155,7 @@ body{
     background-color:#2d2d2d;
 }
 .change_header {
-    background-color:#fff;
+    background-color:#BDBDBD;
     box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -167,28 +167,37 @@ body{
 }
 
 .navbar-right{
-    margin-right: 1.5rem;
-
+    margin-right: 1rem;
 }
 
 .nav-link , .change_nav-link{
     transition: all 0.4s;
     list-style-type: none;
     text-decoration: none;
-    display: block;
     font-weight: bold;
     font-size: 1rem;
 }
 
+.made,
 .nav-link, 
 .main{
     color: white;
     font-weight: bold;
 }
 
+.change_made,
 .change_nav-link{
     color: black;
 }
+
+.made,
+.change_made{
+  transition: all 0.4s;
+  text-decoration: none;
+}
+
+
+
 
 .nav-link:hover, 
 .nav-link:focus,
@@ -200,4 +209,35 @@ body{
     text-decoration: none;
     transition: all 0.4s;
 }
+
+
+
+.fade-in-section {
+  opacity: 0 ;
+  /* transform: translateY(20vh); */
+  visibility: hidden;
+  transition: opacity 1s ease-out, transform 0.5s ease-out;
+  will-change: opacity, visibility;
+}
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+}
+.blank{
+  margin: 10em 5em 10em 5em;
+}
+
+
+.blank hr{
+  background-position: center;
+  display: block;
+  height: 10em;
+  border: 0;
+  /* background-image: url(../img/running_imposter_1.gif); */
+  background-image: url(../img/running_imposter_loop.gif);
+  background-size: 80% 70%;
+  background-repeat: no-repeat;
+}
+
 

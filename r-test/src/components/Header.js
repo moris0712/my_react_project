@@ -30,26 +30,23 @@ function Header() {
             <header className={scrollPosition < 30 ? "original_header" : "change_header"}>
                 <p id="Main" className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)}>My page<Link to="/"><img id="bonobono" src={isHover ? bonobonohover : bonobono} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)} /></Link></p>
                 <ul class="navbar-left">
-                    <li clssName="nav-item">
+                    <li className="nav-item">
                         <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/">메인</Link>
                     </li>
-                    <li clssName="nav-item">
+                    <li className="nav-item">
                         <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/used_tool">사용 툴</Link>
                     </li>
-                    <li clssName="nav-item">
+                    <li className="nav-item">
                         <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/profile">프로필</Link>
                     </li>
-                    <li clssName="nav-item">
+                    <li className="nav-item">
                         <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/clock">갤러리</Link>
                     </li>
                 </ul>
 
                 <ul class="navbar-right">
-                    <li clssName="nav-item">
-                        <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/">Log In</Link>
-                    </li>
-                    <li clssName="nav-item">
-                        <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/">Sign Up</Link>
+                    <li className="nav-item">
+                        <span className={scrollPosition < 30 ? "made" : "change_made"}>Made By&nbsp;&nbsp;</span><span className={scrollPosition < 30 ? "nav-link" : "change_nav-link"}> Junyoung Park</span>
                     </li>
                 </ul>
 

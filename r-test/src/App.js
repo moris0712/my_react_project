@@ -7,9 +7,14 @@ import Profile from './components/Profile';
 import Learning from './components/Learning';
 import ScrollToTop from './components/ScrollToTop';
 
+import Game from './game/Game';
+
 import Slider from "react-slick";
 import "./slick.css"; 
 import "./slick-theme.css";
+
+import imposter from './img/running_imposter_once.gif'
+
 
 
 import main_img1 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-30.jpeg';
@@ -20,13 +25,9 @@ import main_img5 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-44.png';
 import main_img6 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-47.jpeg';
 
 
-
-
-
-
 function FadeInSection(props) {
   const [isVisible, setVisible] = React.useState(true);
-  const domRef = React.useRef();
+  const domRef = React.useRef(); // getElementById 처럼 특정 DOM을 선택해야하는 상황에 쓰임
   React.useEffect(() => {
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => setVisible(entry.isIntersecting));
@@ -47,7 +48,26 @@ function FadeInSection(props) {
   );
 }
 
+function FadeInhr(props) {
+  const [isVisible, setVisible] = React.useState(true);
+  const domRef = React.useRef(); // getElementById 처럼 특정 DOM을 선택해야하는 상황에 쓰임
 
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => setVisible(entry.isIntersecting));
+    });
+
+    const { current } = domRef;
+    observer.observe(current);
+
+    return () => observer.unobserve(current);
+  }, []);
+  return (
+    <div className='blank' ref={domRef}>
+      <img src={isVisible ? props.imposter : ''}  />
+    </div>
+  );
+}
 
 
 class Main extends Component {
@@ -59,18 +79,15 @@ class Main extends Component {
     };
     // 콜백에서 `this`가 작동하려면 아래와 같이 바인딩 해주어야 합니다.
     this.current_Time = this.current_Time.bind(this);
-
-
-    //console.log(this.state.time_on);
   }
+  
 
-
-  reloadGif = () => {
-    this.setState({ loaded: '' })
-    setTimeout(() => {
-      this.setState({ loaded: this.state.gif })
-    }, 0)
-  }
+  // reloadGif = () => {
+  //   this.setState({ loaded: '' })
+  //   setTimeout(() => {
+  //     this.setState({ loaded: this.state.gif })
+  //   }, 0)
+  // }
 
   current_Time() {
     this.setState(state => ({
@@ -125,7 +142,7 @@ class Main extends Component {
 
               <div id="main_p">
                 {/* <p>Am I Doing Well?</p> */}
-                <div class="hello">
+                <div className="hello">
                   <span>H&nbsp;</span>
                   <span>E&nbsp;</span>
                   <span>L&nbsp;</span>
@@ -145,33 +162,33 @@ class Main extends Component {
               </div>
             {/* </FadeInSection> */}
           </div>
-{/* 
-        <div className="blank">
-          <img src={this.state.loaded} />
+
+        {/* <div className="blank">
+          <img src={imposter} />
         </div> */}
-
-
-          <div className="blank">
-            <hr />
-          </div>
+        
+        <FadeInhr imposter={imposter}/>
 
         {/* <FadeInSection> */}
           <Profile />
         {/* </FadeInSection> */}
 
-          <div className="blank">
-            <hr />
-          </div>
+        <FadeInhr imposter={imposter} />
 
         {/* <FadeInSection> */}
           <Learning />
         {/* </FadeInSection> */}
+
+        <FadeInhr imposter={imposter} />
 
           {/* <button onClick={this.current_Time}>
             현재 시간 {this.state.time_on ? 'ON' : 'OFF'}
           </button>
 
           { this.state.time_on ? <Clock /> : '' } */}
+
+          {/* <Game/> */}
+
       </div>
     );
   }

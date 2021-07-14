@@ -29,7 +29,7 @@ function Header() {
         <BrowserRouter>
             <header className={scrollPosition < 30 ? "original_header" : "change_header"}>
                 <p id="Main" className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)}>My page<Link to="/"><img id="bonobono" src={isHover ? bonobonohover : bonobono} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)} /></Link></p>
-                <ul class="navbar-left">
+                <ul className="navbar-left">
                     <li className="nav-item">
                         <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/">메인</Link>
                     </li>
@@ -44,7 +44,7 @@ function Header() {
                     </li>
                 </ul>
 
-                <ul class="navbar-right">
+                <ul className="navbar-right">
                     <li className="nav-item">
                         <span className={scrollPosition < 30 ? "made" : "change_made"}>Made By&nbsp;&nbsp;</span><span className={scrollPosition < 30 ? "nav-link" : "change_nav-link"}> Junyoung Park</span>
                     </li>

@@ -228,16 +228,19 @@ body{
   margin: 10em 5em 10em 5em;
 }
 
-
+/* 
 .blank hr{
   background-position: center;
   display: block;
   height: 10em;
   border: 0;
-  /* background-image: url(../img/running_imposter_1.gif); */
   background-image: url(../img/running_imposter_loop.gif);
   background-size: 80% 70%;
   background-repeat: no-repeat;
+} */
+.blank img{
+  width: 70%;
+  height: 70%;
 }
 
 

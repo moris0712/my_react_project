@@ -6,6 +6,7 @@ import Used_Tool from './components/Used_Tool';
 import Profile from './components/Profile';
 import Learning from './components/Learning';
 import ScrollToTop from './components/ScrollToTop';
+import Login from './components/Login';
 
 import Game from './game/Game';
 
@@ -86,7 +87,11 @@ class Main extends Component {
   }
 
 
-
+  componentDidMount() {
+    fetch('http://localhost:3001/api')
+      .then(res => res.json())
+      .then(data => this.setState({ title: data.title }));
+  }
 
   current_Time() {
     this.setState(state => ({
@@ -166,6 +171,11 @@ class Main extends Component {
         </div> */}
 
         <FadeInhr imposter={imposter} />
+
+        <div>
+          {this.state.title ? <h1>{this.state.title}</h1> : <h1>loading...</h1>}
+        </div>
+
 
         {/* <FadeInSection> */}
         <Profile />

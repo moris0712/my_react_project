@@ -6,6 +6,8 @@ import { BrowserRouter, Switch, Router, Route, Link } from 'react-router-dom';
 import Used_Tool from './Used_Tool';
 import Clock from './Clock';
 import Profile from './Profile';
+import Login from './Login';
+
 import App from '../App';
 import './Header.css';
 
@@ -31,17 +33,12 @@ function Header() {
                 <p id="Main" className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)}>My page<Link to="/"><img id="bonobono" src={isHover ? bonobonohover : bonobono} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)} /></Link></p>
                 <ul className="navbar-left">
                     <li className="nav-item">
-                        <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/">메인</Link>
+                        <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/login">로그인</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/used_tool">사용 툴</Link>
+                        <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/used_tool">회원가입</Link>
                     </li>
-                    <li className="nav-item">
-                        <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/profile">프로필</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/clock">갤러리</Link>
-                    </li>
+
                 </ul>
 
                 <ul className="navbar-right">
@@ -51,9 +48,9 @@ function Header() {
                 </ul>
 
             </header>
-                <Route path="/" exact component={App}/>
+                <Route path="/" exact component={App} />
+                <Route path="/login" component={Login}/>
                 <Route path="/profile" component={Profile} />
-                <Route path="/used_tool" component={Used_Tool} />
         </BrowserRouter>
     )
 

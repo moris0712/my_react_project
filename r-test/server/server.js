@@ -3,6 +3,8 @@ const app = express();
 const api = require('./routes/index');
 const cors = require('cors');
 
+const session = require('express-session');
+
 const mysql = require('mysql');
 const dbConfig = require('./config/dbConfig');
 
@@ -11,6 +13,7 @@ app.use(express.urlencoded({ extended: false })); //body-parser
 
 app.use(cors()); //  Cross Origin Resource Sharing  도메인 및 포트가 다른 서버로 클라이언트가 요청했을 때 브라우저가 보안상의 이유로 API를 차단
 app.use('/api', api);
+// app.use(cookieParse());
 
 const dbOptions = {
     host: dbConfig.host,
@@ -23,40 +26,50 @@ const dbOptions = {
 const conn = mysql.createConnection(dbOptions);
 conn.connect();
 
-// app.get('/', function (req, res) {
-//     res.send('<p>adsads</p>');
-// });
 
 app.get('/login', function(req,res){
     res.render('login');
 });
 
 app.post('/login', function (req, res) {
+
     var id = req.body.id;
-    var pw = req.body.pwd;
-    console.log(id+" "+pw);
-    var sql = 'SELECT * FROM User WHERE id=?';
-    conn.query(sql, [id], function (err, results) {
-        if (err)
-            console.log(err);
+    var pwd = req.body.pwd;
 
-        if (!results[0])
-            return res.send('please check your id.');
+    if (id && pwd) {
+        conn.query('SELECT * FROM user WHERE id = ? AND pwd = ?', [id, pwd], function (error, results, fields) {
+            if (error) throw error;
+            else{
+                if (results.length > 0) {
+                    // req.session.loggedin = true;
+                    // req.session.id = id;
+                    res.send({
+                        id : id,
+                        isLoggedin: true
+                    })
+                    res.end();
+                    console.log('성공');
+                } else {
+                    res.send({
+                        isLoggedin: false,
+                        failtype: 1
+                    })
+                    res.end();
+                    console.log('실패시발아');
+                }
+            }
+        });
+    } 
+    else {
+        res.send({
+            isLoggedin: false,
+            failtype: 2
+        })
+        console.log('입력시발아');
+        res.end();
+    }
 
-        var user = results[0];
-        crypto.pbkdf2(pw, user.salt, 100000, 64, 'sha512', function (err, derivedKey) {
-            if (err)
-                console.log(err);
-            if (derivedKey.toString('hex') === user.password) {
-                return res.send('login success');
-            }
-            else {
-                return res.send('please check your password.');
-            }
-        });//pbkdf2
-    });//query
-}
-);
+    });
 
 
 

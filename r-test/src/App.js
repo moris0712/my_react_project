@@ -26,28 +26,28 @@ import main_img5 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-44.png';
 import main_img6 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-47.jpeg';
 
 
-function FadeInSection(props) {
-  const [isVisible, setVisible] = React.useState(true);
-  const domRef = React.useRef(); // getElementById 처럼 특정 DOM을 선택해야하는 상황에 쓰임
-  React.useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => setVisible(entry.isIntersecting));
-    });
+// function FadeInSection(props) {
+//   const [isVisible, setVisible] = React.useState(true);
+//   const domRef = React.useRef(); // getElementById 처럼 특정 DOM을 선택해야하는 상황에 쓰임
+//   React.useEffect(() => {
+//     const observer = new IntersectionObserver(entries => {
+//       entries.forEach(entry => setVisible(entry.isIntersecting));
+//     });
 
-    const { current } = domRef;
-    observer.observe(current);
+//     const { current } = domRef;
+//     observer.observe(current);
 
-    return () => observer.unobserve(current);
-  }, []);
-  return (
-    <div
-      className={`fade-in-section ${isVisible ? 'is-visible' : ''}`}
-      ref={domRef}
-    >
-      {props.children}
-    </div>
-  );
-}
+//     return () => observer.unobserve(current);
+//   }, []);
+//   return (
+//     <div
+//       className={`fade-in-section ${isVisible ? 'is-visible' : ''}`}
+//       ref={domRef}
+//     >
+//       {props.children}
+//     </div>
+//   );
+// }
 
 function FadeInhr(props) {
   const [isVisible, setVisible] = React.useState(true); // useState => 초기 값 true 로 정의
@@ -80,7 +80,7 @@ class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      time_on: true,
+      time_on: true
     };
     // 콜백에서 `this`가 작동하려면 아래와 같이 바인딩 해주어야 합니다.
     this.current_Time = this.current_Time.bind(this);

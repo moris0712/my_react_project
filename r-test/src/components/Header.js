@@ -25,7 +25,27 @@ function Header() {
 
     const [isHover,setisHover] = useState(false);
 
+    // 로그인 세션
+    const [isLogin, setIsLogin] = useState(false)
     
+    useEffect(() => {
+        if (sessionStorage.getItem('id') === null) {
+            // sessionStorage 에 id 라는 key 값으로 저장된 값이 없다면
+            console.log('isLogin ?? :: ', isLogin)
+        } else {
+            // sessionStorage 에 id 라는 key 값으로 저장된 값이 있다면
+            // 로그인 상태 변경
+            setIsLogin(true)
+            console.log('isLogin ?? :: ', isLogin)
+        }
+    })
+
+    const onLogout = () => {
+        // sessionStorage 에 id 로 저장되어있는 아이템을 삭제한다.
+        sessionStorage.removeItem('id')
+        // App 으로 이동(새로고침)
+        document.location.href = '/'
+    }
 
     return (
         <BrowserRouter>
@@ -33,7 +53,11 @@ function Header() {
                 <p id="Main" className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)}>My page<Link to="/"><img id="bonobono" src={isHover ? bonobonohover : bonobono} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)} /></Link></p>
                 <ul className="navbar-left">
                     <li className="nav-item">
-                        <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/login">로그인</Link>
+                        {isLogin  ?
+                            <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} onClick={onLogout}>로그아웃</Link>
+                            :
+                            <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/login">로그인</Link>
+                        }
                     </li>
                     <li className="nav-item">
                         <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/used_tool">회원가입</Link>
@@ -43,7 +67,11 @@ function Header() {
 
                 <ul className="navbar-right">
                     <li className="nav-item">
-                        <span className={scrollPosition < 30 ? "made" : "change_made"}>Made By&nbsp;&nbsp;</span><span className={scrollPosition < 30 ? "nav-link" : "change_nav-link"}> Junyoung Park</span>
+                        {isLogin ?
+                            <span><span className={scrollPosition < 30 ? "made" : "change_made"}>어서오세요&nbsp;&nbsp;</span><span className={scrollPosition < 30 ? "nav-link" : "change_nav-link"}> {sessionStorage.getItem('id')}&nbsp;님</span></span>
+                            :
+                            <span><span className={scrollPosition < 30 ? "made" : "change_made"}>Made By&nbsp;&nbsp;</span><span className={scrollPosition < 30 ? "nav-link" : "change_nav-link"}> Junyoung Park</span></span>
+                       }
                     </li>
                 </ul>
 

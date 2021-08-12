@@ -6,7 +6,7 @@ import Used_Tool from './components/Used_Tool';
 import Profile from './components/Profile';
 import Learning from './components/Learning';
 import ScrollToTop from './components/ScrollToTop';
-import Login from './components/Login';
+
 
 import Game from './game/Game';
 

@@ -1,0 +1,62 @@
+body{
+    font-family: "맑은 고딕";
+    font-size:10px;
+    color: #333;
+}
+
+.login-form{
+    margin: 0 auto;
+}
+.login-form form{
+    max-width: 32em;
+    overflow: hidden;
+    margin: 10em auto;
+    border: 0.1em solid gray;
+    border-radius: 0.5em;
+    padding: 1.5em 1em;
+    transition: all 0.4s;
+    display: flex;
+    justify-content: center;
+}
+
+.login-form form .login_input{
+    margin: 1.5em;
+}
+
+.login-form form .assign_input{
+    margin: 2.5em;
+}
+
+.login-form form input{
+    width: 14em;
+}
+
+.login-form form:hover{
+    border: 0.1em solid aquamarine;
+}
+
+/* inline이였던 요소들을 block으로 바꿈 */
+
+.login-form label{
+    display:block;
+}
+
+.login-form label{
+    margin-top: 1em;
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.login-form input{
+    margin-top: 0.5em;
+}
+
+.login_btn{
+    font-size: 1.5em;
+}
+
+.duplicate_p{
+    margin-top: 0.5em;
+    color:red;
+    font-size: 1.5em;
+}

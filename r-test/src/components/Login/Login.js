@@ -64,17 +64,21 @@ class Login extends Component{
 
     render(){
         return (
-            <div>
-                <form onSubmit={this.handleSubmit} id="login-form" >
-
-                    <label className="legend">아이디</label>
-                    <input name="id" type="text" onChange={this.handleIdChange} placeholder="ID"/>
-
-                    <label className="legend">패스워드</label>
-                    <input name="pwd" type="password" onChange={this.handlePwdChange} placeholder="PASSWORD"/>
-                    
-                    <button className="login_btn"  type="submit">로그인</button>
-
+            <div className="login-form">
+                <form onSubmit={this.handleSubmit} >
+                    <div>
+                        <div className="login_input">
+                            <label className="legend">아이디</label>
+                            <input name="id" type="text" onChange={this.handleIdChange} placeholder="ID"/>
+                        </div>
+                        <div className="login_input">
+                            <label className="legend">패스워드</label>
+                            <input name="pwd" type="password" onChange={this.handlePwdChange} placeholder="PASSWORD"/>
+                        </div>
+                        <div className="login_input">
+                            <button className="btn"  type="submit">로그인</button>
+                        </div>
+                    </div>
                 </form>
             </div>
 

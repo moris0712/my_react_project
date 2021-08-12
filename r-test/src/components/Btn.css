@@ -1,0 +1,57 @@
+.btn {
+  background:#BDBDBD;
+  color: #2d2d2d;
+  border:none;
+  transition:800ms ease all;
+  outline:none;
+  font-size:1.6em;
+  height:2em;
+  border:none;
+  padding:0.5em 1em;
+  
+  cursor:pointer;
+  /* border: 3px solid y; */
+  box-shadow: 0 0 0 1px gray inset;
+}
+
+.btn:hover{
+  filter: opacity(1) drop-shadow(0 0 0 white);
+  transform: scale(1.06);
+    background:#2d2d2d;
+  color: white;
+}
+
+.btn:before,.btn:after{
+  content:'';
+  position:absolute;
+  height:0px;
+  width:0px;
+  transition:400ms ease all;
+  border-style: solid;
+  border-width: 0;
+}
+.btn:before{
+  border-color: #BDBDBD;
+  border-right-width: 0.2em;
+  border-top-width: 0.2em;
+  top:0;
+  right:0;
+}
+.btn:after{
+  border-color: #BDBDBD;
+  border-bottom-width: 0.2em;
+  border-left-width: 0.2em;
+  left: 0;
+  bottom: 0;
+}
+
+.btn:hover:before,.btn:hover:after{
+  width:94%;
+  height: 90%;
+  transition:800ms ease all;
+}
+
+.duplicate_btn{
+    font-size:1.2em;
+    margin-left: 0.5em;
+}

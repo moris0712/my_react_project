@@ -6,10 +6,12 @@ import { BrowserRouter, Switch, Router, Route, Link } from 'react-router-dom';
 import Used_Tool from './Used_Tool';
 import Clock from './Clock';
 import Profile from './Profile';
-import Login from './Login';
+import Login from './Login/Login';
+import Assign from './Login/Assign';
 
 import App from '../App';
 import './Header.css';
+import './Btn.css';
 
 import bonobono from '../img/bonobono.png';
 import bonobonohover from '../img/bonobonohover.png';
@@ -50,35 +52,40 @@ function Header() {
     return (
         <BrowserRouter>
             <header className={scrollPosition < 30 ? "original_header" : "change_header"}>
-                <p id="Main" className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)}>My page<Link to="/"><img id="bonobono" src={isHover ? bonobonohover : bonobono} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)} /></Link></p>
-                <ul className="navbar-left">
-                    <li className="nav-item">
-                        {isLogin  ?
-                            <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} onClick={onLogout}>로그아웃</Link>
-                            :
-                            <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/login">로그인</Link>
-                        }
-                    </li>
-                    <li className="nav-item">
-                        <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/used_tool">회원가입</Link>
-                    </li>
+                <p id="Main" className={scrollPosition < 30 ? "nav-link header_comp" : "change_nav-link header_comp"} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)}>My page<Link to="/"><img id="bonobono" src={isHover ? bonobonohover : bonobono} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)} /></Link></p>
+                <div className="navbar-left header_comp">
+                    <div>
+                        <span className="nav-item">
+                            {isLogin  ?
+                                <span className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} onClick={onLogout}>로그아웃</span>
+                                :
+                                <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/login">&nbsp;&nbsp;&nbsp;&nbsp;로그인</Link>
+                            }
+                        </span>
+                        <span className="nav-item">
+                            {isLogin ?
+                                <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/used_tool">마이페이지</Link>
+                                :
+                                <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/assign">&nbsp;&nbsp;회원가입</Link>
+                            }
+                        </span>
+                    </div>
+                </div>
 
-                </ul>
-
-                <ul className="navbar-right">
+                <ul className="navbar-right header_comp">
                     <li className="nav-item">
                         {isLogin ?
                             <span><span className={scrollPosition < 30 ? "made" : "change_made"}>어서오세요&nbsp;&nbsp;</span><span className={scrollPosition < 30 ? "nav-link" : "change_nav-link"}> {sessionStorage.getItem('id')}&nbsp;님</span></span>
                             :
                             <span><span className={scrollPosition < 30 ? "made" : "change_made"}>Made By&nbsp;&nbsp;</span><span className={scrollPosition < 30 ? "nav-link" : "change_nav-link"}> Junyoung Park</span></span>
-                       }
+                        }
                     </li>
                 </ul>
 
             </header>
                 <Route path="/" exact component={App} />
                 <Route path="/login" component={Login}/>
-                <Route path="/profile" component={Profile} />
+                <Route path="/assign" component={Assign} />
         </BrowserRouter>
     )
 

@@ -28,7 +28,8 @@ conn.connect();
 
 
 app.get('/login', function(req,res){
-    res.render('login');
+    // res.render('login');
+    res.send('<p>ㅎㅇ</p>');
 });
 
 app.post('/login', function (req, res) {
@@ -68,8 +69,35 @@ app.post('/login', function (req, res) {
         console.log('입력시발아');
         res.end();
     }
+});
 
-    });
+app.post('/assign_duplicate', function (req, res) {
+
+    var id = req.body.id;
+        console.log(id);
+    if (id) {
+        conn.query('SELECT * FROM user WHERE id = ?', [id], function (error, results, fields) {
+            if (error) throw error;
+            else {
+                console.log(results.length);
+
+                if (results.length > 0) {
+                    // req.session.loggedin = true;
+                    // req.session.id = id;
+                    res.send({
+                        id: id,
+                        isduplicated: true
+                    })
+                } else {
+                    res.send({
+                        id: id,
+                        isduplicated: false
+                    })
+                }
+            }
+        });
+    }
+});
 
 
 

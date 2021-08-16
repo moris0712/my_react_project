@@ -3,7 +3,7 @@ const app = express();
 const api = require('./routes/index');
 const cors = require('cors');
 
-const session = require('express-session');
+const bcrypt = require('bcrypt');
 
 const mysql = require('mysql');
 const dbConfig = require('./config/dbConfig');
@@ -37,26 +37,41 @@ app.post('/login', function (req, res) {
     var id = req.body.id;
     var pwd = req.body.pwd;
 
+
     if (id && pwd) {
-        conn.query('SELECT * FROM user WHERE id = ? AND pwd = ?', [id, pwd], function (error, results, fields) {
+
+        conn.query('SELECT * FROM user WHERE id = ?', [id], function (error, results, fields) {
+            
             if (error) throw error;
             else{
                 if (results.length > 0) {
-                    // req.session.loggedin = true;
-                    // req.session.id = id;
-                    res.send({
-                        id : id,
-                        isLoggedin: true
-                    })
-                    res.end();
-                    console.log('성공');
+                    // bcrypt.compareSync(입력한 비밀번호, 데베에 있는 해시된 비밀번호) 동기
+                    bcrypt.compare(pwd, results[0].pwd, function (err, compare_result) { // 비동기, 입력한 비밀번호와 데베에 저장된 해쉬된 비밀번호 같은지 확인
+                        if (err) throw err;
+                        else{
+                            if(compare_result){
+                                res.send({
+                                    id: results[0].id,
+                                    name: results[0].name,
+                                    isLoggedin: true
+                                })
+                                res.end();
+                            }
+                            else{
+                                res.send({
+                                    isLoggedin: false,
+                                    message: '비밀번호가 일치하지 않습니다.'
+                                })
+                                res.end();
+                            }
+                        }
+                    });
                 } else {
                     res.send({
                         isLoggedin: false,
-                        failtype: 1
+                        message: '존재하지 않는 아이디 입니다.'
                     })
                     res.end();
-                    console.log('실패시발아');
                 }
             }
         });
@@ -64,23 +79,45 @@ app.post('/login', function (req, res) {
     else {
         res.send({
             isLoggedin: false,
-            failtype: 2
+            message: '아이디와 비밀번호를 입력해주세요.'
         })
-        console.log('입력시발아');
         res.end();
+    }
+});
+
+app.post('/profile', function (req, res) {
+
+    var id = req.body.id;
+
+    
+    if (id) {
+        conn.query('SELECT * FROM user WHERE id = ?', [id], function (error, results, fields) {
+            if (error) throw error;
+            else {
+                if (results.length > 0) {
+                    // req.session.loggedin = true;
+                    // req.session.id = id;
+                    res.send({
+                        name: results[0].name,
+                        id: results[0].id
+                    })
+                }
+                else{
+                    console.log('error');
+                }
+            }
+        });
     }
 });
 
 app.post('/assign_duplicate', function (req, res) {
 
     var id = req.body.id;
-        console.log(id);
+       
     if (id) {
         conn.query('SELECT * FROM user WHERE id = ?', [id], function (error, results, fields) {
             if (error) throw error;
             else {
-                console.log(results.length);
-
                 if (results.length > 0) {
                     // req.session.loggedin = true;
                     // req.session.id = id;
@@ -99,6 +136,32 @@ app.post('/assign_duplicate', function (req, res) {
     }
 });
 
+app.post('/assign', function (req, res) {
+
+    var name = req.body.name;
+    var id = req.body.id;
+    var pwd = req.body.pwd;
+
+    
+    if (name && id && pwd) {
+
+        // var hash_pwd = bcrypt.hashSync(pwd, 10);  // 동기 saltOrRounds 2^10번 돌림, 클 수록 암호화 강력하지만 속도 느려짐
+  
+        bcrypt.hash(pwd, 10, function (error, hash_pwd) { // 비동기
+            if (error) throw error;
+            else{
+                conn.query('INSERT INTO user (name, id, pwd, no_encrypted_pwd) values(?,?,?,?)', [name, id, hash_pwd, pwd], function (error, results, fields) {
+                    if (error) throw error;
+                    else {
+                        res.send({
+                            assign: true
+                        })
+                    }
+                });
+            }
+        });
+    }
+});
 
 
 const port = 3001;

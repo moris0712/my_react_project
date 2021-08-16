@@ -16,6 +16,7 @@ class Login extends Component{
         };
     }
 
+
     handleIdChange(e) {
         this.setState({ id: e.target.value })
     }
@@ -37,16 +38,11 @@ class Login extends Component{
             }
         })
             .then( res => {
-                // console.log(res);
-                // console.log(res.data);
+                console.log(res);
+                console.log(res.data);
+                console.log(res.data.message);
                 if(res.data.isLoggedin == false){
-                    console.log('asd');
-                    if(res.data.failtype==1){
-                        alert('입력하신 아이디 혹은 패스워드가 일치하지 않습니다.')
-                    }
-                    else if(res.data.failtype==2){
-                        alert('아이디와 패스워드를 입력해주세요')
-                    }
+                    alert(res.data.message);
                 }
                 else{
                     sessionStorage.setItem('id',id);
@@ -69,10 +65,10 @@ class Login extends Component{
                     <div>
                         <div className="login_input">
                             <label className="legend">아이디</label>
-                            <input name="id" type="text" onChange={this.handleIdChange} placeholder="ID"/>
+                            <input name="id" type="text" onChange={this.handleIdChange} autoComplete="off" placeholder="ID"/>
                         </div>
                         <div className="login_input">
-                            <label className="legend">패스워드</label>
+                            <label className="legend">비밀번호</label>
                             <input name="pwd" type="password" onChange={this.handlePwdChange} placeholder="PASSWORD"/>
                         </div>
                         <div className="login_input">

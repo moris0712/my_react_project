@@ -55,8 +55,13 @@ body{
     font-size: 1.5em;
 }
 
-.duplicate_p{
+.duplicate_red , .duplicate_green{
     margin-top: 0.5em;
-    color:red;
     font-size: 1.5em;
+}
+.duplicate_red{
+    color: red;
+}
+.duplicate_green{
+    color: green;
 }

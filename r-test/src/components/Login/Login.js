@@ -38,9 +38,7 @@ class Login extends Component{
             }
         })
             .then( res => {
-                console.log(res);
-                console.log(res.data);
-                console.log(res.data.message);
+
                 if(res.data.isLoggedin == false){
                     alert(res.data.message);
                 }

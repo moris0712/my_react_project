@@ -202,7 +202,7 @@ class Board extends Component {
                             )
                             .map( list => {
                                 return (
-                                    <TableRow className="table_row" key={list.idx}>
+                                    <TableRow hover className="table_row" key={list.idx}>
                                         <TableCell className="table_cell" width='10%' align="center">{list.rownum}</TableCell>
                                         <TableCell className="table_cell" width='20%' align="center">{list.title}</TableCell>
                                         <TableCell className="table_cell" width='30%' align="center">{list.content}</TableCell>
@@ -214,22 +214,25 @@ class Board extends Component {
                             })
                         }
                         </TableBody>
-                        <TableRow>
-                            <TablePagination
-                                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                colSpan={5}
-                                count={this.state.Board_list_length}
-                                rowsPerPage={this.state.Board_rows_per_page}
-                                page={this.state.Board_page}
-                                SelectProps={{
-                                    inputProps: { 'aria-label': 'rows per page' },
-                                    native: true,
-                                }}
-                                onPageChange={this.handleChangePage}
-                                onRowsPerPageChange={this.handleChangeRowsPerPage}
-                                ActionsComponent={TablePaginationActions}
-                            />
-                        </TableRow>
+                        <TableFooter>
+                            <TableRow>
+                                <TablePagination
+                                    rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                                    colSpan={5}
+                                    count={this.state.Board_list_length}
+                                    rowsPerPage={this.state.Board_rows_per_page}
+                                    page={this.state.Board_page}
+                                    SelectProps={{
+                                        inputProps: { 'aria-label': 'rows per page' },
+                                        native: true,
+                                    }}
+                                    onPageChange={this.handleChangePage}
+                                    onRowsPerPageChange={this.handleChangeRowsPerPage}
+                                    ActionsComponent={TablePaginationActions}
+                                />
+                            </TableRow>
+                        </TableFooter>
+
                     </Table>
                 </Paper>
             </div>

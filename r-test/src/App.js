@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Clock from './components/Clock';
 import Used_Tool from './components/Used_Tool';
-import Profile from './components/Profile';
+import Profile from './components/Mypage/Profile';
 import Learning from './components/Learning';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -87,11 +87,7 @@ class Main extends Component {
   }
 
 
-  componentDidMount() {
-    fetch('http://localhost:3001/api')
-      .then(res => res.json())
-      .then(data => this.setState({ title: data.title }));
-  }
+
 
   current_Time() {
     this.setState(state => ({

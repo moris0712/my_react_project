@@ -1,0 +1,28 @@
+body{
+    font-family: "맑은 고딕";
+    font-size:10px;
+    color: #333;
+}
+
+
+.board_div {
+    min-width: 100em;
+    margin: 10em auto;
+    transition: all 0.4s;
+    display: flex;
+    justify-content: center;
+    color: white;
+}
+.board{
+    width: 120em;
+}
+.table_row{
+}
+.table_cell{
+    display: block;
+    max-width: 10em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+

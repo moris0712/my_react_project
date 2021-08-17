@@ -89,9 +89,8 @@ app.post('/profile', function (req, res) {
 
     var id = req.body.id;
 
-    
     if (id) {
-        conn.query('SELECT * FROM user WHERE id = ?', [id], function (error, results, fields) {
+        conn.query('SELECT id, name FROM user WHERE id = ?', [id], function (error, results, fields) {
             if (error) throw error;
             else {
                 if (results.length > 0) {
@@ -115,7 +114,7 @@ app.post('/assign_duplicate', function (req, res) {
     var id = req.body.id;
        
     if (id) {
-        conn.query('SELECT * FROM user WHERE id = ?', [id], function (error, results, fields) {
+        conn.query('SELECT id FROM user WHERE id = ?', [id], function (error, results, fields) {
             if (error) throw error;
             else {
                 if (results.length > 0) {
@@ -163,6 +162,26 @@ app.post('/assign', function (req, res) {
     }
 });
 
+
+app.get('/board', function (req, res) {
+    var sql = 'SELECT rownum, idx, title, content, '
+    sql += '(SELECT id FROM User WHERE writer_idx = idx) as writer, ins_date, upd_date, hit '
+    sql += 'FROM(SELECT @rownum:=@rownum+1 AS rownum '
+    sql += ', B.* '
+    sql += 'FROM(SELECT @rownum := 0 ) R '
+    sql += ', Board B '
+    sql += 'ORDER BY upd_date ASC ) SUB '
+    sql += 'ORDER BY rownum DESC;'
+    // 대충 게시판 목록 불러와서 행번호 역순으로 메기는 질의문
+    conn.query( sql, function(error,results,fields){
+        if (error) throw error;
+        else {
+            console.log(results);
+            res.send(results);
+        }
+    })
+
+});
 
 const port = 3001;
 app.listen(port, () => {

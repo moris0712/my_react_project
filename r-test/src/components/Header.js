@@ -4,9 +4,9 @@ import { BrowserRouter, Switch, Router, Route, Link } from 'react-router-dom';
 
 import Used_Tool from './Used_Tool';
 import Clock from './Clock';
-import Profile from './Profile';
 import Login from './Login/Login';
 import Assign from './Login/Assign';
+import Board from './Board/Board';
 
 import App from '../App';
 import './Header.css';
@@ -86,6 +86,9 @@ function Header() {
                                 <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/assign">&nbsp;&nbsp;회원가입</Link>
                             }
                         </span>
+                        <span className="nav-item">
+                            <Link className={scrollPosition < 30 ? "nav-link" : "change_nav-link"} to="/board">&nbsp;&nbsp;게시판</Link>
+                        </span>
                     </div>
                 </div>
 
@@ -103,6 +106,7 @@ function Header() {
                 <Route path="/" exact component={App} />
                 <Route path="/login" component={Login}/>
                 <Route path="/assign" component={Assign} />
+                <Route path="/board" component={Board} />
         </BrowserRouter>
     )
 

@@ -3,9 +3,7 @@ import axios from 'axios';
 import './Board.css';
 
 
-// material-ui Table싺 베낌
-
-
+// material-ui Table
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
@@ -22,6 +20,16 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+
+// material-ui Table text-fields
+import InputBase from '@material-ui/core/InputBase';
+import Divider from '@material-ui/core/Divider';
+import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
+import DirectionsIcon from '@material-ui/icons/Directions';
+
+import MenuList from '@material-ui/core/MenuList';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -53,17 +61,19 @@ function TablePaginationActions(props) {
 
     return (
         <div className={classes.root}>
-            <IconButton
+            <IconButton 
+                className="IconButton"
                 onClick={handleFirstPageButtonClick}
                 disabled={page === 0}
                 aria-label="first page"
             >
                 {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
             </IconButton>
-            <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
+            <IconButton className="IconButton" onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
                 {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
             </IconButton>
-            <IconButton
+            <IconButton 
+                className="IconButton"
                 onClick={handleNextButtonClick}
                 disabled={page >= Math.ceil(count / rowsPerPage) - 1}
                 aria-label="next page"
@@ -71,6 +81,7 @@ function TablePaginationActions(props) {
                 {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
             </IconButton>
             <IconButton
+                className="IconButton"
                 onClick={handleLastPageButtonClick}
                 disabled={page >= Math.ceil(count / rowsPerPage) - 1}
                 aria-label="last page"
@@ -96,8 +107,6 @@ TablePaginationActions.propTypes = {
 
 
 
-
-
 class Board extends Component {
 
     constructor(props) {
@@ -108,16 +117,16 @@ class Board extends Component {
 
         this.state = {
             loading: false,
-            idx: 0,
             Board_List: [],
             Board_list_length: 0,
             Board_rows_per_page: 5,
-            Board_page: 0,
+            Board_page: 0, 
+            value: 'title',
             user_idx: 2
-        };
+        }; // user_idx: 유저 idx (게시판글쓸때 수정), loading은 게시판 불러와져는지 확인, 나머지는 싹다 board 변수
     }
 
-
+    // 게시판 리스트 불러오는 함수
     load_list = async () => {
         axios({
             method: "get",
@@ -141,12 +150,11 @@ class Board extends Component {
 
     componentDidMount() {
         this.load_list();
+        // 시작하자마자 게시판 리스트 불러오기
     }
 
-
-
+    // 작성일 표시해주는 함수
     caculate_date(db_time){
-
         var time_interval = (new Date().getTime() - new Date(db_time))/1000 ;
         if(time_interval < 60){
             return "방금";
@@ -176,65 +184,99 @@ class Board extends Component {
         });
     };
 
+    handleSelectChange = (event) => {
+        this.setState({ value: event.target.value });
+    }
+
+ 
+    
+
+    search_list = () => {
+        alert(this.state.value);
+        console.log(this.state.value);
+    }
 
     render() {
 
         return (
-            <div className="board_div">
-                <Paper className="board">
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell className="table_cell" width='10%' align="center">번호</TableCell>
-                                <TableCell className="table_cell" width='20%' align="center">제목</TableCell>
-                                <TableCell className="table_cell" width='30%' align="center">내용</TableCell>
-                                <TableCell className="table_cell" width='15%' align="center">작성자</TableCell>
-                                <TableCell className="table_cell" width='15%' align="center">작성일</TableCell>
-                                <TableCell className="table_cell" width='10%' align="center">조회수</TableCell>
-                            </TableRow>
-                        </TableHead>
+            <div className="Table_Component">
+                <div className="btn_div">
+                    <Paper component="form" className="Search_root">
+                        <IconButton className="Search_icon" aria-label="menu">
+                            <select className="Search_select" value={this.state.value} onChange={this.handleSelectChange}>
+                                <option value="title" defaultValue>제목</option>
+                                <option value="content">내용</option>
+                                <option value="writer">작성자</option>
+                            </select>
+                        </IconButton>
+                        <InputBase
+                            className="Search_input"
+                            placeholder="Search Google Maps"
+                            inputProps={{ 'aria-label': 'search google maps' }}
+                        />
+                        <IconButton className="Search_icon_glasses" onClick={this.search_list} aria-label="search">
+                            <SearchIcon />
+                        </IconButton>
+                    </Paper>
+                </div>
+                <div className="Table_div">
+                    <Paper className="Paper">
+                        <Table className="Table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell className="TableCell" width='10%' align="center">번호</TableCell>
+                                    <TableCell className="TableCell" width='20%' align="center">제목</TableCell>
+                                    <TableCell className="TableCell" width='30%' align="center">내용</TableCell>
+                                    <TableCell className="TableCell" width='15%' align="center">작성자</TableCell>
+                                    <TableCell className="TableCell" width='15%' align="center">작성일</TableCell>
+                                    <TableCell className="TableCell" width='10%' align="center">조회수</TableCell>
+                                </TableRow>
+                            </TableHead>
 
-                        <TableBody>
-                        {
-                            (this.state.Board_rows_per_page > 0
-                                ? this.state.Board_List.slice(this.state.Board_page * this.state.Board_rows_per_page, this.state.Board_page * this.state.Board_rows_per_page + this.state.Board_rows_per_page)
-                                : this.state.Board_List
-                            )
-                            .map( list => {
-                                return (
-                                    <TableRow hover className="table_row" key={list.idx}>
-                                        <TableCell className="table_cell" width='10%' align="center">{list.rownum}</TableCell>
-                                        <TableCell className="table_cell" width='20%' align="center">{list.title}</TableCell>
-                                        <TableCell className="table_cell" width='30%' align="center">{list.content}</TableCell>
-                                        <TableCell className="table_cell" width='15%' align="center">{list.writer}</TableCell>
-                                        <TableCell className="table_cell" width='15%' align="center">{this.caculate_date(list.upd_date)}</TableCell>
-                                        <TableCell className="table_cell" width='10%' align="center">{list.hit}</TableCell>
-                                    </TableRow>
-                                );
-                            })
-                        }
-                        </TableBody>
-                        <TableFooter>
-                            <TableRow>
-                                <TablePagination
-                                    rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                    colSpan={5}
-                                    count={this.state.Board_list_length}
-                                    rowsPerPage={this.state.Board_rows_per_page}
-                                    page={this.state.Board_page}
-                                    SelectProps={{
-                                        inputProps: { 'aria-label': 'rows per page' },
-                                        native: true,
-                                    }}
-                                    onPageChange={this.handleChangePage}
-                                    onRowsPerPageChange={this.handleChangeRowsPerPage}
-                                    ActionsComponent={TablePaginationActions}
-                                />
-                            </TableRow>
-                        </TableFooter>
-
-                    </Table>
-                </Paper>
+                            <TableBody>
+                            {
+                                (this.state.Board_rows_per_page > 0
+                                    ? this.state.Board_List.slice(this.state.Board_page * this.state.Board_rows_per_page, this.state.Board_page * this.state.Board_rows_per_page + this.state.Board_rows_per_page)
+                                    : this.state.Board_List
+                                )
+                                .map( list => {
+                                    return (
+                                        <TableRow hover className="TableRow" key={list.idx}>
+                                            <TableCell className="TableCell" width='10%' align="center">{list.rownum}</TableCell>
+                                            <TableCell className="TableCell" width='20%' align="center">{list.title}</TableCell>
+                                            <TableCell className="TableCell" width='30%' align="center">{list.content}</TableCell>
+                                            <TableCell className="TableCell" width='15%' align="center">{list.writer}</TableCell>
+                                            <TableCell className="TableCell" width='15%' align="center">{this.caculate_date(list.upd_date)}</TableCell>
+                                            <TableCell className="TableCell" width='10%' align="center">{list.hit}</TableCell>
+                                        </TableRow>
+                                    );
+                                })
+                            }
+                            </TableBody>
+                            <TableFooter className="TableFooter">
+                                <TableRow>
+                                    <TablePagination className="TablePagination"
+                                        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1}]}
+                                        colSpan={5}
+                                        count={this.state.Board_list_length}
+                                        rowsPerPage={this.state.Board_rows_per_page}
+                                        page={this.state.Board_page}
+                                        SelectProps={{
+                                            inputProps: { 'aria-label': 'rows per page' },
+                                            native: true,
+                                        }}
+                                        onPageChange={this.handleChangePage}
+                                        onRowsPerPageChange={this.handleChangeRowsPerPage}
+                                        ActionsComponent={TablePaginationActions}
+                                    />
+                                </TableRow>
+                            </TableFooter>
+                        </Table>
+                    </Paper>
+                </div>
+                <div className="btn_div">
+                    <button className="btn" >게시하기</button>
+                </div>
             </div>
         );
     }

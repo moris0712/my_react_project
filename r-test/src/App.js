@@ -1,22 +1,17 @@
-import React, { Component, useEffect } from "react";
+import React, { Component } from "react";
 import logo from './logo.svg';
 import './App.css';
-import Clock from './components/Clock';
-import Used_Tool from './components/Used_Tool';
+// import Clock from './components/Clock';
+// import Used_Tool from './components/Used_Tool';
 import Profile from './components/Mypage/Profile';
 import Learning from './components/Learning';
-import ScrollToTop from './components/ScrollToTop';
-
-
-import Game from './game/Game';
+// import ScrollToTop from './components/ScrollToTop';
 
 import Slider from "react-slick";
 import "./slick.css";
 import "./slick-theme.css";
 
 import imposter from './img/running_imposter_once.gif'
-
-
 
 import main_img1 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-30.jpeg';
 import main_img2 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-35.jpeg';
@@ -48,6 +43,8 @@ import main_img6 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-47.jpeg';
 //     </div>
 //   );
 // }
+
+const image_lazy = React.lazy();
 
 function FadeInhr(props) {
   const [isVisible, setVisible] = React.useState(true); // useState => 초기 값 true 로 정의
@@ -162,38 +159,38 @@ class Main extends Component {
           {/* </FadeInSection> */}
         </div>
 
-        {/* <div className="blank">
-          <img src={imposter} />
-        </div> */}
+          {/* <div className="blank">
+            <img src={imposter} />
+          </div> */}
 
-        <FadeInhr imposter={imposter} />
+          <FadeInhr imposter={imposter} />
 
-        <div>
-          {this.state.title ? <h1>{this.state.title}</h1> : <h1>loading...</h1>}
+          <div>
+            {this.state.title ? <h1>{this.state.title}</h1> : <h1>loading...</h1>}
+          </div>
+
+
+          {/* <FadeInSection> */}
+          <Profile />
+          {/* </FadeInSection> */}
+
+          <FadeInhr imposter={imposter} />
+
+          {/* <FadeInSection> */}
+          <Learning />
+          {/* </FadeInSection> */}
+
+          <FadeInhr imposter={imposter} />
+
+          {/* <button onClick={this.current_Time}>
+              현재 시간 {this.state.time_on ? 'ON' : 'OFF'}
+            </button>
+
+            { this.state.time_on ? <Clock /> : '' } */}
+
+          {/* <Game/> */}
+
         </div>
-
-
-        {/* <FadeInSection> */}
-        <Profile />
-        {/* </FadeInSection> */}
-
-        <FadeInhr imposter={imposter} />
-
-        {/* <FadeInSection> */}
-        <Learning />
-        {/* </FadeInSection> */}
-
-        <FadeInhr imposter={imposter} />
-
-        {/* <button onClick={this.current_Time}>
-            현재 시간 {this.state.time_on ? 'ON' : 'OFF'}
-          </button>
-
-          { this.state.time_on ? <Clock /> : '' } */}
-
-        {/* <Game/> */}
-
-      </div>
     );
   }
 

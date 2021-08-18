@@ -3,26 +3,76 @@ body{
     font-size:10px;
     color: #333;
 }
-
-
-.board_div {
+.Table_Component{
     min-width: 100em;
     margin: 10em auto;
+    overflow: hidden;
+}
+
+.Table_div {
+    margin-top: 4em; /* clear:both와 overflow:hidden */
     transition: all 0.4s;
     display: flex;
     justify-content: center;
-    color: white;
+    clear: both;
 }
-.board{
+.Paper{
     width: 120em;
 }
-.table_row{
+
+.Table{
+    background-color: #2d2d2d;
+    transition: all 0.4s;
+    border: 0.15em solid gray;
+    border-radius: 0.5em;
 }
-.table_cell{
+.Table:hover{
+    border: 0.15em solid aquamarine;
+}
+
+.TableCell{
     display: block;
     max-width: 10em;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    /* 텍스트 길이 벗어낫을때 ..으로 처리 */
+}
+
+.TableCell, .IconButton, .TablePagination{
+    color :#ffffff !important;  
+}
+
+.btn_div{
+    margin: 2em auto;
+    width: 120em;
+}
+.btn{
+    float: right;
+}
+
+
+.Search_root {
+    width: 40em;
+    height: 3em;
+    float: right;
+    margin-bottom: 2em;
+    display: flex;
+    align-items: center;
+}
+.Search_input{
+    margin-left: 1em;
+    width: 19em;
+}
+.Search_icon_glasses{
+    float: right;
+}
+
+.Search_select{
+    border: 0;
+    outline: 0;
+}
+.Search_text{
+    font-size: 1em;
 }
 

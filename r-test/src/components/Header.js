@@ -1,14 +1,14 @@
 import { render } from 'react-dom';
-import React ,{ useState, useEffect} from 'react';
-import { BrowserRouter, Switch, Router, Route, Link } from 'react-router-dom';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { BrowserRouter as Router , Switch, Route, Link } from 'react-router-dom';
 
 import Used_Tool from './Used_Tool';
 import Clock from './Clock';
-import Login from './Login/Login';
+// import Login from './Login/Login';
 import Assign from './Login/Assign';
 import Board from './Board/Board';
 
-import App from '../App';
+// import App from '../App';
 import './Header.css';
 import './Btn.css';
 
@@ -16,6 +16,9 @@ import bonobono from '../img/bonobono.png';
 import bonobonohover from '../img/bonobonohover.png';
 
 import axios from 'axios';
+
+const Home = lazy(() => import('../App'));
+const Login = lazy(() => import('./Login/Login')); //lazy 로딩이 안되요 
 
 function Header() {
     const [nickname, setNickname] = useState('');
@@ -67,7 +70,7 @@ function Header() {
     }
 
     return (
-        <BrowserRouter>
+        <Router>
             <header className={scrollPosition < 30 ? "original_header" : "change_header"}>
                 <p id="Main" className={scrollPosition < 30 ? "nav-link header_comp" : "change_nav-link header_comp"} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)}>My page<Link to="/"><img id="bonobono" src={isHover ? bonobonohover : bonobono} onMouseOver={() => setisHover(true)} onMouseOut={() => setisHover(false)} /></Link></p>
                 <div className="navbar-left header_comp">
@@ -103,11 +106,15 @@ function Header() {
                 </ul>
 
             </header>
-                <Route path="/" exact component={App} />
-                <Route path="/login" component={Login}/>
-                <Route path="/assign" component={Assign} />
-                <Route path="/board" component={Board} />
-        </BrowserRouter>
+            <Suspense fallback={<div><div>Loading..</div></div>}>
+                <Switch>
+                    <Route path="/" exact component={Home} />
+                    <Route path="/login" component={Login}/>
+                    <Route path="/assign" component={Assign} />
+                    <Route path="/board" component={Board} />
+                </Switch>
+            </Suspense>
+        </Router>
     )
 
 }

@@ -164,24 +164,63 @@ app.post('/assign', function (req, res) {
 
 
 app.get('/board', function (req, res) {
-    var sql = 'SELECT rownum, idx, title, content, '
-    sql += '(SELECT id FROM User WHERE writer_idx = idx) as writer, ins_date, upd_date, hit '
-    sql += 'FROM(SELECT @rownum:=@rownum+1 AS rownum '
-    sql += ', B.* '
-    sql += 'FROM(SELECT @rownum := 0 ) R '
-    sql += ', Board B '
+
+    var sql = 'SELECT rownum, idx, title, content, writer, ins_date, upd_date,hit '
+    sql += 'FROM ( SELECT @rownum:=@rownum+1 AS rownum '
+    sql += ', idx, title, content, (SELECT id FROM User WHERE writer_idx = idx) as writer, ins_date, upd_date,hit '
+    sql += 'FROM Board B , '
+    sql += '( SELECT @rownum := 0 ) R '
     sql += 'ORDER BY upd_date ASC ) SUB '
-    sql += 'ORDER BY rownum DESC;'
+    sql += 'ORDER BY SUB.rownum DESC;'
     // 대충 게시판 목록 불러와서 행번호 역순으로 메기는 질의문
-    conn.query( sql, function(error,results,fields){
+    conn.query( sql , function(error,results,fields){
         if (error) throw error;
         else {
-            console.log(results);
             res.send(results);
         }
     })
 
 });
+
+
+// app.post('/board', function (req, res) {
+
+    
+//     var search_input = req.body.input;
+
+//     if (req.body.value=='제목')
+//         var search_value = 'title';
+//     else if (req.body.value == '내용')
+//         var search_value = 'content'
+//     else if (req.body.value == '작성자' )
+//         var search_value = 'writer'
+//     else
+//         console.log('오류');
+
+
+//     var sql = 'SELECT rownum, idx, title, content, writer, ins_date, upd_date,hit '
+//     sql += 'FROM ( SELECT @rownum:=@rownum+1 AS rownum '
+//     sql += ', idx, title, content, (SELECT id FROM User WHERE writer_idx = idx) as writer, ins_date, upd_date,hit '
+//     sql += 'FROM Board B , '
+//     sql += '( SELECT @rownum := 0 ) R '
+//     sql += 'ORDER BY upd_date ASC ) SUB WHERE '+search_value+' LIKE ? '
+//     sql += 'ORDER BY SUB.rownum DESC;'
+//     // 대충 게시판 목록 불러와서 행번호 역순으로 메기는 질의문
+//     conn.query(sql, ['%'+search_input+'%'],function (error, results, fields) {
+//         if (error) throw error;
+//         else {
+//             if(results.length ==0){
+//                 console.log('조회데이터없음');
+//             }
+//             else{
+//                 console.log(results);
+//                 res.send(results);
+//             }
+//         }
+//     })
+
+// });
+
 
 const port = 3001;
 app.listen(port, () => {

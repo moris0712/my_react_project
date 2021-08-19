@@ -12,7 +12,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
 import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import IconButton from '@material-ui/core/IconButton';
@@ -23,13 +22,8 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 
 // material-ui Table text-fields
 import InputBase from '@material-ui/core/InputBase';
-import Divider from '@material-ui/core/Divider';
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import DirectionsIcon from '@material-ui/icons/Directions';
 
-import MenuList from '@material-ui/core/MenuList';
-import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -114,16 +108,18 @@ class Board extends Component {
 
         this.handleChangePage = this.handleChangePage.bind(this);
         this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
+        this.handleSearchList = this.handleSearchList.bind(this);
 
         this.state = {
-            loading: false,
-            Board_List: [],
+            Board_List: [],  // 출력할 게시판 리스트
+            Original_Board_List: [],  // 전체 게시판 리스트 저장
             Board_list_length: 0,
             Board_rows_per_page: 5,
             Board_page: 0, 
-            value: 'title',
+            value: '제목',
+            input: '',
             user_idx: 2
-        }; // user_idx: 유저 idx (게시판글쓸때 수정), loading은 게시판 불러와져는지 확인, 나머지는 싹다 board 변수
+        }; // user_idx: 유저 idx (게시판글쓸때 수정), 나머지는 싹다 board 변수
     }
 
     // 게시판 리스트 불러오는 함수
@@ -134,16 +130,12 @@ class Board extends Component {
         })
         .then(res => {
             this.setState({
-                loading: true,
                 Board_List: res.data,
-                Board_list_length: res.data.length
+                Original_Board_List: res.data,
+                Board_list_length: res.data.length,
             });
-
         })
         .catch(err => {
-            this.setState({
-                loading: false
-            });
             console.error(err);
         });
     }
@@ -188,33 +180,56 @@ class Board extends Component {
         this.setState({ value: event.target.value });
     }
 
- 
-    
-
-    search_list = () => {
-        alert(this.state.value);
-        console.log(this.state.value);
+    handleInputChange = (event) => {
+        this.setState({ input: event.target.value});
     }
+    
+    handleSearchList = () =>{
+        
+        const search_list = this.state.Original_Board_List.filter((list) => {
+            if (this.state.value == "제목")
+                return list.title.toLowerCase().includes(this.state.input.toLowerCase());
+            else if (this.state.value == "내용")
+                return list.content.toLowerCase().includes(this.state.input.toLowerCase());
+            else if (this.state.value == "작성자")
+                return list.writer.toLowerCase().includes(this.state.input.toLowerCase());
+            else
+                console.log("에러");
+        });
+        this.setState({ 
+            Board_List: search_list,
+            Board_list_length: search_list.length
+        });
+    }
+
+    keyPress = (e) =>{
+        if(e.keyCode ==13){
+            this.handleSearchList();
+        }
+    }
+
 
     render() {
 
         return (
             <div className="Table_Component">
                 <div className="btn_div">
-                    <Paper component="form" className="Search_root">
+                    <Paper  className="Search_root">
                         <IconButton className="Search_icon" aria-label="menu">
                             <select className="Search_select" value={this.state.value} onChange={this.handleSelectChange}>
-                                <option value="title" defaultValue>제목</option>
-                                <option value="content">내용</option>
-                                <option value="writer">작성자</option>
+                                <option value="제목" defaultValue>제목</option>
+                                <option value="내용">내용</option>
+                                <option value="작성자">작성자</option>
                             </select>
                         </IconButton>
                         <InputBase
                             className="Search_input"
-                            placeholder="Search Google Maps"
-                            inputProps={{ 'aria-label': 'search google maps' }}
+                            placeholder={this.state.value+' 검색'}
+                            value={this.state.input}
+                            onChange={this.handleInputChange}
+                            onKeyDown={this.keyPress}
                         />
-                        <IconButton className="Search_icon_glasses" onClick={this.search_list} aria-label="search">
+                        <IconButton className="Search_icon_glasses" onClick={this.handleSearchList} aria-label="search">
                             <SearchIcon />
                         </IconButton>
                     </Paper>
@@ -239,17 +254,32 @@ class Board extends Component {
                                     ? this.state.Board_List.slice(this.state.Board_page * this.state.Board_rows_per_page, this.state.Board_page * this.state.Board_rows_per_page + this.state.Board_rows_per_page)
                                     : this.state.Board_List
                                 )
-                                .map( list => {
-                                    return (
-                                        <TableRow hover className="TableRow" key={list.idx}>
-                                            <TableCell className="TableCell" width='10%' align="center">{list.rownum}</TableCell>
-                                            <TableCell className="TableCell" width='20%' align="center">{list.title}</TableCell>
-                                            <TableCell className="TableCell" width='30%' align="center">{list.content}</TableCell>
-                                            <TableCell className="TableCell" width='15%' align="center">{list.writer}</TableCell>
-                                            <TableCell className="TableCell" width='15%' align="center">{this.caculate_date(list.upd_date)}</TableCell>
-                                            <TableCell className="TableCell" width='10%' align="center">{list.hit}</TableCell>
-                                        </TableRow>
-                                    );
+                                .map( (list) =>{
+                                    
+                                    if (this.state.Board_list_length>0){
+                                        return (
+                                            <TableRow hover className="TableRow" key={list.idx}>
+                                                <TableCell className="TableCell" width='10%' align="center">{list.rownum}</TableCell>
+                                                <TableCell className="TableCell" width='20%' align="center">{list.title}</TableCell>
+                                                <TableCell className="TableCell" width='30%' align="center">{list.content}</TableCell>
+                                                <TableCell className="TableCell" width='15%' align="center">{list.writer}</TableCell>
+                                                <TableCell className="TableCell" width='15%' align="center">{this.caculate_date(list.upd_date)}</TableCell>
+                                                <TableCell className="TableCell" width='10%' align="center">{list.hit}</TableCell>
+                                            </TableRow>
+                                        );
+                                    }
+                                    else {
+                                        return (
+                                            <TableRow hover className="TableRow" key="0">
+                                                <TableCell className="TableCell" width='10%' align="center">adssd</TableCell>
+                                                <TableCell className="TableCell" width='20%' align="center">das</TableCell>
+                                                <TableCell className="TableCell" width='30%' align="center">adsd</TableCell>
+                                                <TableCell className="TableCell" width='15%' align="center">ads</TableCell>
+                                                <TableCell className="TableCell" width='15%' align="center">asdsd</TableCell>
+                                                <TableCell className="TableCell" width='10%' align="center">asd</TableCell>
+                                            </TableRow>
+                                        );
+                                    }
                                 })
                             }
                             </TableBody>

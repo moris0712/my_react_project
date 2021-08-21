@@ -15,9 +15,9 @@ class Modal extends Component {
 
     }
 
-    componentDidUpdate(){
-        console.log(this.state.isComment);
-    }
+    // componentDidUpdate(){
+    //     console.log(this.state.isComment);
+    // }
 
     handleTextArea = (e) => {
         

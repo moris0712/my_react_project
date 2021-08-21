@@ -37,22 +37,29 @@ class Login extends Component{
                 pwd: pwd
             }
         })
-            .then( res => {
+        .then( res => {
 
-                if(res.data.isLoggedin == false){
-                    alert(res.data.message);
-                }
-                else{
-                    sessionStorage.setItem('id',id);
-                    // 작업 완료 되면 페이지 이동(새로고침)
-                    document.location.href = '/';
-                }
+            if(res.data.isLoggedin == false){
+                alert(res.data.message);
+            }
+            else{
+                sessionStorage.setItem('useInfo',
+                    JSON.stringify({
+                        idx: res.data.idx,
+                        pwd: res.data.pwd,
+                        id: res.data.id,
+                        name: res.data.name
+                    })    
+                );
+                // 작업 완료 되면 페이지 이동(새로고침)
+                document.location.href = '/';
+            }
 
-                
-            })
-            .catch(err => {
-                console.error(err);
-            });
+            
+        })
+        .catch(err => {
+            console.error(err);
+        });
     };
 
 

@@ -34,10 +34,11 @@ function Header() {
     const [isHover,setisHover] = useState(false);
 
     // 로그인 세션
-    const [isLogin, setIsLogin] = useState(false)
+    const [isLogin, setIsLogin] = useState(false);
     
+
     useEffect(() => {
-        if (sessionStorage.getItem('id') === null) {
+        if (sessionStorage.getItem('useInfo') === null) {
             // sessionStorage 에 id 라는 key 값으로 저장된 값이 없다면
             // console.log('isLogin ?? :: ', isLogin)
         } else {
@@ -46,25 +47,13 @@ function Header() {
             setIsLogin(true)
             // console.log('isLogin ?? :: ', isLogin)
 
-            axios({
-                method: "post",
-                url: 'http://localhost:3001/profile',
-                data: {
-                    id: sessionStorage.getItem('id')
-                }
-            })
-            .then(res => {
-                setNickname(res.data.name);
-            })
-            .catch(err => {
-                console.error(err);
-            });
+            setNickname(JSON.parse(sessionStorage.getItem('useInfo')).name);
         }
     })
 
     const onLogout = () => {
         // sessionStorage 에 id 로 저장되어있는 아이템을 삭제한다.
-        sessionStorage.removeItem('id')
+        sessionStorage.removeItem('useInfo')
         // App 으로 이동(새로고침)
         document.location.href = '/'
     }

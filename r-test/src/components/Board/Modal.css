@@ -1,0 +1,151 @@
+body{
+    font-family: "맑은 고딕";
+    font-size:10px;
+    color: #333;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 99;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+.modal button {
+    outline: none;
+    cursor: pointer;
+    border: 0;
+}
+.modal > section {  /* 모달 높이 60em 메인 높이 25em overflow:auto */
+    width: 60em;
+    height: 60em;
+    margin:0 auto;
+    border-radius: .3rem;
+    background-color: #fff;
+    /* 팝업이 열릴때 스르륵 열리는 효과 */
+    animation: modal-show .3s;
+}
+.modal > section > header {
+    position: relative;
+    padding: 0.8em 1em 0.1em 0.8em;
+    font-weight: 700;
+    font-size: 2em;
+}
+.modal > section > header > .inform {
+    margin-top: 2em;
+    font-size: 0.7em;
+}
+.modal > section > header > .inform > p > .date{
+    margin-right: 2em;
+}
+.modal > section > header > .inform > p > .hit{
+    float: right;
+}
+.modal > section > header button {
+    position: absolute;
+    top: 0.6em;
+    right: 0.6em;
+    width: 1em;
+    font-size: 1.5em;
+    font-weight: 700;
+    text-align: center;
+    color: #999;
+    background-color: transparent;
+}
+.modal > section > main {
+    font-size: 1.5em;
+    height: 25em;
+    padding: 2em;
+    border-bottom: 1px solid #dee2e6;
+    border-top: 1px solid #dee2e6;
+    overflow: auto;
+}
+.modal > section > footer {
+    padding: 1em 1em;
+    text-align: right;
+}
+.modal > section > footer button {
+    padding: 6px 12px;
+    color: #fff;
+    background-color: #6c757d;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+.modal > section > header , .modal > section > footer{
+    background-color: #f1f1f1;
+}
+
+
+
+
+.modal.openModal {
+    display: flex;
+    align-items: center;
+    /* 팝업이 열릴때 스르륵 열리는 효과 */
+    animation: modal-bg-show .3s;
+}
+@keyframes modal-show {
+    from {
+        opacity: 0;
+        margin-top: -50px;
+    }
+    to {
+        opacity: 1;
+        margin-top: 0;
+    }
+}
+@keyframes modal-bg-show {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.comment_div{
+    margin-top: 4em;
+}
+.comment_inner_div{
+    padding: 0.3em 0.1 1em 0.1em;
+    border: 0.1em solid #dee2e6;
+    font-size: 1.2em;
+    overflow: hidden;
+    width: 30em;
+}
+.comment_count{
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+}
+.comment_btn{
+    font-size: 0.8em !important;
+    margin: 0 1em 0.5em 0;
+}
+.comment_input_div{
+    text-align: center;
+}
+.comment_input{
+    width: 38em;
+    height: 5em;
+    resize: none;
+    border: none;
+    overflow: hidden;
+}   
+.comment_btn_div{
+    margin-top: 0.6em;
+}
+.comment_input, .submit{
+    vertical-align: middle !important;
+}
+.id{
+    margin-left: 0.8em;
+    font-size: 0.9em;
+    padding: 0.5em 0;
+}
+.comment_length{
+    margin-left: 0.8em;
+}

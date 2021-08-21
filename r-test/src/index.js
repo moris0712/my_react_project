@@ -1,10 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import Clock from './components/Clock';
 import Header from './components/Header';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
 import reportWebVitals from './reportWebVitals';
 

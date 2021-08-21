@@ -26,6 +26,7 @@
   position:absolute;
   height:0px;
   width:0px;
+  display: none;
   transition:400ms ease all;
   border-style: solid;
   border-width: 0;
@@ -52,6 +53,6 @@
 }
 
 .duplicate_btn{
-    font-size:1.2em;
-    margin-left: 0.5em;
+  font-size:1.2em;
+  margin-left: 0.5em;
 }

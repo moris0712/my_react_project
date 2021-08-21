@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from 'axios';
 import './Board.css';
+import Modal from './Modal';
 
 
 // material-ui Table
@@ -118,8 +119,12 @@ class Board extends Component {
             Board_page: 0, 
             value: '제목',
             input: '',
-            user_idx: 2
+            open: false,
+            Board_Content: [],
+            Board_Comment: [],
+            isLogin: false
         }; // user_idx: 유저 idx (게시판글쓸때 수정), 나머지는 싹다 board 변수
+
     }
 
     // 게시판 리스트 불러오는 함수
@@ -143,7 +148,16 @@ class Board extends Component {
     componentDidMount() {
         this.load_list();
         // 시작하자마자 게시판 리스트 불러오기
+
+        if (sessionStorage.getItem('useInfo') === null) {
+            this.setState({isLogin: false });
+        } else {
+            this.setState({isLogin : true});
+        }
+        
     }
+
+
 
     // 작성일 표시해주는 함수
     caculate_date(db_time){
@@ -199,8 +213,46 @@ class Board extends Component {
         this.setState({ 
             Board_List: search_list,
             Board_list_length: search_list.length
+        }, () =>{
+            this.Table_Row
         });
     }
+
+    Table_Row = () => {
+
+        (this.state.Board_rows_per_page > 0
+            ? this.state.Board_List.slice(this.state.Board_page * this.state.Board_rows_per_page, this.state.Board_page * this.state.Board_rows_per_page + this.state.Board_rows_per_page)
+            : this.state.Board_List
+        )
+        .map((list) => {
+
+            if (this.state.Board_list_length > 0) {
+                return (
+                    <TableRow hover className="TableRow" key={list.idx} onClick={() => this.handleOpen(list.idx)}>
+                        <TableCell className="TableCell" width='10%' align="center">{list.rownum}</TableCell>
+                        <TableCell className="TableCell" width='20%' align="center">{list.title}</TableCell>
+                        <TableCell className="TableCell" width='30%' align="center">{list.content}</TableCell>
+                        <TableCell className="TableCell" width='15%' align="center">{list.writer}</TableCell>
+                        <TableCell className="TableCell" width='15%' align="center">{this.caculate_date(list.upd_date)}</TableCell>
+                        <TableCell className="TableCell" width='10%' align="center">{list.hit}</TableCell>
+                    </TableRow>
+                );
+            }
+            else { //웨 안돼
+                return (
+                    <TableRow hover className="TableRow" key="0">
+                        <TableCell className="TableCell" width='10%' align="center">adssd</TableCell>
+                        <TableCell className="TableCell" width='20%' align="center">das</TableCell>
+                        <TableCell className="TableCell" width='30%' align="center">adsd</TableCell>
+                        <TableCell className="TableCell" width='15%' align="center">ads</TableCell>
+                        <TableCell className="TableCell" width='15%' align="center">asdsd</TableCell>
+                        <TableCell className="TableCell" width='10%' align="center">asd</TableCell>
+                    </TableRow>
+                );
+            }
+        })
+    }
+
 
     keyPress = (e) =>{
         if(e.keyCode ==13){
@@ -209,7 +261,46 @@ class Board extends Component {
     }
 
 
+
+    handleOpen = (idx) => {
+        const click_list = this.state.Original_Board_List.filter((list) => {
+            return list.idx == idx
+        });
+        
+        this.setState({
+            Board_Content: click_list,
+            open: true,
+        })
+        console.log(idx);
+        axios({
+            method: "post",
+            url: 'http://localhost:3001/board_comment',
+            data: {
+                idx: idx
+            }
+        })
+        .then(res => {
+            this.setState({
+                Board_Comment: res.data
+            })
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+        
+
+        document.body.style.overflow = "hidden";
+    };
+
+    handleClose = () => {
+        this.setState({ open: false });
+        document.body.style.overflow = "unset"
+    };
+
+
     render() {
+
 
         return (
             <div className="Table_Component">
@@ -236,7 +327,7 @@ class Board extends Component {
                 </div>
                 <div className="Table_div">
                     <Paper className="Paper">
-                        <Table className="Table">
+                        <Table className="Table" >
                             <TableHead>
                                 <TableRow>
                                     <TableCell className="TableCell" width='10%' align="center">번호</TableCell>
@@ -248,39 +339,9 @@ class Board extends Component {
                                 </TableRow>
                             </TableHead>
 
-                            <TableBody>
+                            <TableBody >
                             {
-                                (this.state.Board_rows_per_page > 0
-                                    ? this.state.Board_List.slice(this.state.Board_page * this.state.Board_rows_per_page, this.state.Board_page * this.state.Board_rows_per_page + this.state.Board_rows_per_page)
-                                    : this.state.Board_List
-                                )
-                                .map( (list) =>{
-                                    
-                                    if (this.state.Board_list_length>0){
-                                        return (
-                                            <TableRow hover className="TableRow" key={list.idx}>
-                                                <TableCell className="TableCell" width='10%' align="center">{list.rownum}</TableCell>
-                                                <TableCell className="TableCell" width='20%' align="center">{list.title}</TableCell>
-                                                <TableCell className="TableCell" width='30%' align="center">{list.content}</TableCell>
-                                                <TableCell className="TableCell" width='15%' align="center">{list.writer}</TableCell>
-                                                <TableCell className="TableCell" width='15%' align="center">{this.caculate_date(list.upd_date)}</TableCell>
-                                                <TableCell className="TableCell" width='10%' align="center">{list.hit}</TableCell>
-                                            </TableRow>
-                                        );
-                                    }
-                                    else {
-                                        return (
-                                            <TableRow hover className="TableRow" key="0">
-                                                <TableCell className="TableCell" width='10%' align="center">adssd</TableCell>
-                                                <TableCell className="TableCell" width='20%' align="center">das</TableCell>
-                                                <TableCell className="TableCell" width='30%' align="center">adsd</TableCell>
-                                                <TableCell className="TableCell" width='15%' align="center">ads</TableCell>
-                                                <TableCell className="TableCell" width='15%' align="center">asdsd</TableCell>
-                                                <TableCell className="TableCell" width='10%' align="center">asd</TableCell>
-                                            </TableRow>
-                                        );
-                                    }
-                                })
+                                this.Table_Row()
                             }
                             </TableBody>
                             <TableFooter className="TableFooter">
@@ -304,6 +365,15 @@ class Board extends Component {
                         </Table>
                     </Paper>
                 </div>
+
+                    
+                <Modal open={this.state.open}
+                    close={this.handleClose}
+                    content={this.state.Board_Content}
+                    comment={this.state.Board_Comment}
+                />
+                
+
                 <div className="btn_div">
                     <button className="btn" >게시하기</button>
                 </div>

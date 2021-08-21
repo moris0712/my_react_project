@@ -51,6 +51,8 @@ app.post('/login', function (req, res) {
                         else{
                             if(compare_result){
                                 res.send({
+                                    idx: results[0].idx,
+                                    pwd: results[0].pwd,
                                     id: results[0].id,
                                     name: results[0].name,
                                     isLoggedin: true
@@ -164,12 +166,12 @@ app.post('/assign', function (req, res) {
 
 
 app.get('/board', function (req, res) {
-
+    // 게시판 전체리스트
     var sql = 'SELECT rownum, idx, title, content, writer, ins_date, upd_date,hit '
     sql += 'FROM ( SELECT @rownum:=@rownum+1 AS rownum '
-    sql += ', idx, title, content, (SELECT id FROM User WHERE writer_idx = idx) as writer, ins_date, upd_date,hit '
+    sql += ', idx, title, content, (SELECT id FROM User WHERE writer_idx = idx) as writer, ins_date, upd_date, hit, isdelete '
     sql += 'FROM Board B , '
-    sql += '( SELECT @rownum := 0 ) R '
+    sql += '( SELECT @rownum := 0 ) R Where isdelete=0 '
     sql += 'ORDER BY upd_date ASC ) SUB '
     sql += 'ORDER BY SUB.rownum DESC;'
     // 대충 게시판 목록 불러와서 행번호 역순으로 메기는 질의문
@@ -183,43 +185,17 @@ app.get('/board', function (req, res) {
 });
 
 
-// app.post('/board', function (req, res) {
 
-    
-//     var search_input = req.body.input;
-
-//     if (req.body.value=='제목')
-//         var search_value = 'title';
-//     else if (req.body.value == '내용')
-//         var search_value = 'content'
-//     else if (req.body.value == '작성자' )
-//         var search_value = 'writer'
-//     else
-//         console.log('오류');
-
-
-//     var sql = 'SELECT rownum, idx, title, content, writer, ins_date, upd_date,hit '
-//     sql += 'FROM ( SELECT @rownum:=@rownum+1 AS rownum '
-//     sql += ', idx, title, content, (SELECT id FROM User WHERE writer_idx = idx) as writer, ins_date, upd_date,hit '
-//     sql += 'FROM Board B , '
-//     sql += '( SELECT @rownum := 0 ) R '
-//     sql += 'ORDER BY upd_date ASC ) SUB WHERE '+search_value+' LIKE ? '
-//     sql += 'ORDER BY SUB.rownum DESC;'
-//     // 대충 게시판 목록 불러와서 행번호 역순으로 메기는 질의문
-//     conn.query(sql, ['%'+search_input+'%'],function (error, results, fields) {
-//         if (error) throw error;
-//         else {
-//             if(results.length ==0){
-//                 console.log('조회데이터없음');
-//             }
-//             else{
-//                 console.log(results);
-//                 res.send(results);
-//             }
-//         }
-//     })
-
-// });
+app.post('/board_comment', function (req, res) {
+    // 게시판 상세보기
+    var idx = req.body.idx;
+    conn.query('SELECT idx, comment, parent_idx, writer_idx, ins_date, upd_date FROM Board_comment WHERE board_idx=?', [idx], function (error, results, fields) {
+        if (error) throw error;
+        else {
+            res.send(results);
+        }
+    });
+});
 
 
 const port = 3001;

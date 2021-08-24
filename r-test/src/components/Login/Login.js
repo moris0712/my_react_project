@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import axios from 'axios';
 import './Login.css';
 
+
+
 class Login extends Component{
 
     constructor(props) {
@@ -43,14 +45,15 @@ class Login extends Component{
                 alert(res.data.message);
             }
             else{
-                sessionStorage.setItem('useInfo',
-                    JSON.stringify({
-                        idx: res.data.idx,
-                        pwd: res.data.pwd,
-                        id: res.data.id,
-                        name: res.data.name
-                    })    
-                );
+                // sessionStorage.setItem('isLogin', res.data.isLoggedin);
+                // sessionStorage.setItem('useInfo',
+                //     JSON.stringify({
+                //         idx: res.data.idx,
+                //         pwd: res.data.pwd,
+                //         id: res.data.id,
+                //         name: res.data.name
+                //     })    
+                // );
                 // 작업 완료 되면 페이지 이동(새로고침)
                 document.location.href = '/';
             }

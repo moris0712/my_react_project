@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const api = require('./routes/index');
+
 const cors = require('cors');
 
 const bcrypt = require('bcrypt');
@@ -11,8 +11,15 @@ const dbConfig = require('./config/dbConfig');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); //body-parser
 
-app.use(cors()); //  Cross Origin Resource Sharing  도메인 및 포트가 다른 서버로 클라이언트가 요청했을 때 브라우저가 보안상의 이유로 API를 차단
-app.use('/api', api);
+let corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true
+}  // axios에서 쿠키를 교환할 때 withCredentials를 true로 바꿔줘야한다 (Header.js)  이거없으면 세션 안됨
+
+
+app.use(cors(corsOptions)); //  Cross Origin Resource Sharing  도메인 및 포트가 다른 서버로 클라이언트가 요청했을 때 브라우저가 보안상의 이유로 API를 차단
+
+
 // app.use(cookieParse());
 
 const dbOptions = {
@@ -27,15 +34,35 @@ const conn = mysql.createConnection(dbOptions);
 conn.connect();
 
 
-app.get('/login', function(req,res){
-    // res.render('login');
-    res.send('<p>ㅎㅇ</p>');
-});
+const session = require('express-session');
+const MySQLStore = require("express-mysql-session")(session);
+
+
+var sessionStore = new MySQLStore(dbOptions,conn);
+
+app.use(session({
+    httpOnly: true, //자바스크립트를 통해 세션 쿠키를 사용할 수 없도록 함
+    key: 'Top key',
+    secret: 'Top secret',        //암호화하는 데 쓰일 키
+    resave: false,            //세션을 언제나 저장할지 설정함
+    saveUninitialized: true, //세션이 저장되기 전 uninitialized 상태로 미리 만들어 저장
+    store: sessionStore,
+    // cookie: {	//세션 쿠키 설정 (세션 관리 시 클라이언트에 보내는 쿠키)
+    //     Secure: true
+    // }
+}))
+
+const api = require('./routes/index');
+app.use('/api', api);
+
+
+
 
 app.post('/login', function (req, res) {
 
     var id = req.body.id;
     var pwd = req.body.pwd;
+
 
 
     if (id && pwd) {
@@ -50,14 +77,25 @@ app.post('/login', function (req, res) {
                         if (err) throw err;
                         else{
                             if(compare_result){
-                                res.send({
+                                req.session.user={
                                     idx: results[0].idx,
                                     pwd: results[0].pwd,
                                     id: results[0].id,
-                                    name: results[0].name,
-                                    isLoggedin: true
-                                })
-                                res.end();
+                                    name: results[0].name
+                                };
+
+                               req.session.save( err => {
+                                    if(err){
+                                        console.log('여기에러?');
+                                    }    
+                                    else{
+                                        res.send({
+                                            isLoggedin: true
+                                        })
+                                    }
+                                });
+                                // console.log(req.session.user);
+                                console.log(req.session.user.name+" 로그인");
                             }
                             else{
                                 res.send({
@@ -87,6 +125,47 @@ app.post('/login', function (req, res) {
     }
 });
 
+
+app.get('/', (req, res) => {
+    if (req.session.user){
+        res.send({
+            isLoggedin: true,
+            name: req.session.user.name
+        });
+    }
+    else{
+        res.send({
+            isLoggedin: false
+        });
+    }
+})
+
+
+
+app.get('/logout', function (req, res) {
+   
+    if(req.session.user){
+        console.log('ㅂㅂ2');
+        req.session.destroy(
+            function (err) {
+                if (err) {
+                    console.log('세션 삭제 에러');
+                    return;
+                }
+                else{
+                    console.log('세션 삭제 성공');
+                    res.send({
+                        isLogout: true
+                    })
+                }
+            }
+        );  
+    } else {
+        console.log('로그인 안되어 있음');
+    }
+
+});
+
 app.post('/profile', function (req, res) {
 
     var id = req.body.id;
@@ -96,8 +175,6 @@ app.post('/profile', function (req, res) {
             if (error) throw error;
             else {
                 if (results.length > 0) {
-                    // req.session.loggedin = true;
-                    // req.session.id = id;
                     res.send({
                         name: results[0].name,
                         id: results[0].id
@@ -189,7 +266,46 @@ app.get('/board', function (req, res) {
 app.post('/board_comment', function (req, res) {
     // 게시판 상세보기
     var idx = req.body.idx;
-    conn.query('SELECT idx, comment, parent_idx, writer_idx, ins_date, upd_date FROM Board_comment WHERE board_idx=?', [idx], function (error, results, fields) {
+
+    var sql ='SELECT idx, comment, parent_idx, '
+    sql += '(SELECT name FROM User WHERE idx = writer_idx) as writer, '
+    sql += 'ins_date, upd_date, '
+    sql += '(SELECT COUNT(*) FROM Board_recommend WHERE board_idx=? and comment_idx =idx) AS recommend ' // 댓글 추천수
+    sql += '(SELECT EXISTS(SELECT * FROM Board_recommend WHERE comment_idx=idx and user_idx=1)) as isrecommend ' // 내가 댓글 추천했는지
+    sql += 'FROM Board_comment WHERE board_idx=? and isdelete=0 ' //user_idx 수정할것
+    sql += 'ORDER BY upd_date DESC '
+    conn.query(sql, [idx,idx], function (error, results, fields) {
+        if (error) throw error;
+        else {
+            console.log(results);
+            res.send(results);
+        }
+    });
+});
+
+
+
+app.post('/view_count', function (req, res) {
+    // 조회수
+    var idx = req.body.idx;
+
+    conn.query('UPDATE Board SET hit = hit+1 WHERE idx = ?', [idx], function (error, results, fields) {
+        if (error) throw error;
+        else {
+            res.send(results);
+        }
+    });
+});
+
+
+
+app.post('/submit_comment', function (req, res) {
+    // 댓글등록
+    var text = req.body.text;
+    var user_idx = req.body.user_idx;
+    var board_idx = req.body.board_idx;
+
+    conn.query('INSERT INTO Board_comment(board_idx, comment, writer_idx) values(?, ?, ?)', [board_idx, text, user_idx], function (error, results, fields) {
         if (error) throw error;
         else {
             res.send(results);

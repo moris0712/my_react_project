@@ -122,6 +122,7 @@ class Board extends Component {
             open: false,
             Board_Content: [],
             Board_Comment: [],
+            Board_idx: 0,
             No_result: '게시물이 존재하지 않습니다',
             isLogin: false
         }; // user_idx: 유저 idx (게시판글쓸때 수정), 나머지는 싹다 board 변수
@@ -232,8 +233,29 @@ class Board extends Component {
         this.setState({
             Board_Content: click_list,
             open: true,
+            Board_idx: idx
         })
-        console.log(idx);
+        
+        this.load_comment(idx);
+
+        axios({
+            method: "post",
+            url: 'http://localhost:3001/view_count',
+            data: {
+                idx: idx
+            }
+        })
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        
+        document.body.style.overflow = "hidden";
+    };
+
+    load_comment = (idx) => {
         axios({
             method: "post",
             url: 'http://localhost:3001/board_comment',
@@ -241,19 +263,17 @@ class Board extends Component {
                 idx: idx
             }
         })
-        .then(res => {
-            this.setState({
-                Board_Comment: res.data
+            .then(res => {
+                this.setState({
+                    Board_Comment: res.data
+                })
             })
-        })
-        .catch(err => {
-            console.error(err);
-        });
+            .catch(err => {
+                console.error(err);
+            });
+    }
 
-        
 
-        document.body.style.overflow = "hidden";
-    };
 
     handleClose = () => {
         this.setState({ open: false });
@@ -356,6 +376,8 @@ class Board extends Component {
                     close={this.handleClose}
                     content={this.state.Board_Content}
                     comment={this.state.Board_Comment}
+                    idx={this.state.Board_idx}
+                    reload_comment={this.load_comment}
                 />
                 
 

@@ -121,7 +121,7 @@ body{
     font-size: 1.2em;
     margin-bottom: 0.5em;
 }
-.comment_btn{
+.comment_btn, .reply_btn{
     font-size: 0.8em !important;
     margin: 0 1em 0.5em 0;
 }
@@ -149,3 +149,41 @@ body{
 .comment_length{
     margin-left: 0.8em;
 }
+
+.comments_div{
+    margin-top: 1em;
+}
+
+.comments_inner_div{
+    padding: 1em;
+    border-top: 0.1em solid #dee2e6;
+    border-bottom: 0.1em solid #dee2e6;
+    overflow: hidden;
+}
+.comments_inner_div div{
+    margin: 0.3em 0 0.3em 0;
+}
+.reply_btn{
+    float: left;
+}
+
+.recommend_icon_div{
+    float: right;
+}
+.recommend_icon{
+    color:gray;
+    transition: 0.5s all !important;
+    vertical-align:bottom;
+} 
+.recommend_icon:hover{
+    color:aquamarine;
+    transform: translateY(-20%) scale(1.2);
+    transition: 0.5s all;
+}
+.recommend_count{
+    margin-left: 0.3em;
+}
+.comments_inner_div_footer{
+    margin-top: 1em !important;
+}
+

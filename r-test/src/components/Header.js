@@ -17,6 +17,9 @@ import bonobonohover from '../img/bonobonohover.png';
 
 import axios from 'axios';
 
+axios.defaults.withCredentials = true;
+
+
 const Home = lazy(() => import('../App'));
 const Login = lazy(() => import('./Login/Login')); //lazy 로딩이 안되요 
 
@@ -35,27 +38,62 @@ function Header() {
 
     // 로그인 세션
     const [isLogin, setIsLogin] = useState(false);
+
     
-
     useEffect(() => {
-        if (sessionStorage.getItem('useInfo') === null) {
-            // sessionStorage 에 id 라는 key 값으로 저장된 값이 없다면
-            // console.log('isLogin ?? :: ', isLogin)
-        } else {
-            // sessionStorage 에 id 라는 key 값으로 저장된 값이 있다면
-            // 로그인 상태 변경
-            setIsLogin(true)
-            // console.log('isLogin ?? :: ', isLogin)
+        axios({
+            method: "get",
+            url: 'http://localhost:3001/'
+        })
+        .then(res => {
+            if (res.data.isLoggedin){
+                setNickname(res.data.name);
+                setIsLogin(true);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        });
+    }, []);
 
-            setNickname(JSON.parse(sessionStorage.getItem('useInfo')).name);
-        }
-    })
+    // useEffect(() => {
+        
+    //     if (sessionStorage.getItem('isLogin') === null) {
+    //         // sessionStorage 에 id 라는 key 값으로 저장된 값이 없다면
+    //         // console.log('isLogin ?? :: ', isLogin)
+    //     } else {
+    //         // sessionStorage 에 id 라는 key 값으로 저장된 값이 있다면
+    //         // 로그인 상태 변경
+            
+    //         // console.log('isLogin ?? :: ', isLogin)
+
+    //         // setNickname(JSON.parse(sessionStorage.getItem('useInfo')).name);
+    //     }
+    // })
+
 
     const onLogout = () => {
         // sessionStorage 에 id 로 저장되어있는 아이템을 삭제한다.
-        sessionStorage.removeItem('useInfo')
-        // App 으로 이동(새로고침)
-        document.location.href = '/'
+
+        axios({
+            method: "get",
+            url: 'http://localhost:3001/logout'
+        })
+        .then( res => {
+            if (res.data.isLogout){
+                alert('로그아웃 되었습니다.');
+                setIsLogin(false); // 새로고침해서 필요없긴함 
+                document.location.href = '/';  // App 으로 이동(새로고침)
+            }
+            else{
+                alert('로그아웃에러');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        });
+        // sessionStorage.removeItem('isLogin');
+        
     }
 
     return (

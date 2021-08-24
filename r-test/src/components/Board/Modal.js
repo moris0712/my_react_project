@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import './Modal.css';
-
+import axios from 'axios';
+import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
 
 class Modal extends Component {
 
@@ -8,24 +9,51 @@ class Modal extends Component {
         super(props);
 
         this.handleTextArea = this.handleTextArea.bind(this);
+        this.handleSubmitComment = this.handleSubmitComment.bind(this);
+
         this.state = {
             textarea_length: 0,
-            isComment: this.props.comment.length
+            textarea: ''
         }; // user_idx: 유저 idx (게시판글쓸때 수정), 나머지는 싹다 board 변수
 
     }
 
-    // componentDidUpdate(){
-    //     console.log(this.state.isComment);
-    // }
-
     handleTextArea = (e) => {
         
         this.setState({
-            textarea_length: this.getTextLength(e.target.value)
+            textarea_length: this.getTextLength(e.target.value),
+            textarea: e.target.value
         })
-        console.log(this.state.textarea_length);
+        // console.log(this.state.textarea_length);
     };
+
+    handleSubmitComment = (e) => {
+        if(this.state.textarea_length>300)
+            alert('댓글은 300자 이하로 입력해주세요.');
+        else{
+            if(window.confirm('댓글을 등록하시겠습니까?')){
+                axios({
+                    method: "post",
+                    url: 'http://localhost:3001/submit_comment',
+                    data: {
+                        text: this.state.textarea,
+                        board_idx: this.props.idx,
+                        user_idx: JSON.parse(sessionStorage.getItem('useInfo')).idx
+                    }
+                })
+                .then(res => {
+                    this.setState({
+                        textarea: '',
+                        textarea_length: 0
+                    })
+                    this.props.reload_comment(this.props.idx);
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+            }
+        }
+    }
 
     getTextLength = (str) => { // 영어 1바이트 한글 2바이트
         var len = 0;
@@ -57,28 +85,34 @@ class Modal extends Component {
                                 <main>
                                     {content.content}
                                     <div className="comment_div">
-                                        <div className="comment_count">n Comment(s)</div>
+                                        <div className="comment_count">{this.props.comment.length} Comment(s)</div>
                                         <div className="comment_inner_div">
                                             <div className="id">{JSON.parse(sessionStorage.getItem('useInfo')).name}</div>
                                             <div className='comment_input_div'>
-                                                <textarea className='comment_input' name="comment" placeholder="댓글을 남겨주세요" onChange={this.handleTextArea}/>
+                                                <textarea className='comment_input' name="comment" value={this.state.textarea} placeholder="댓글을 남겨주세요" onChange={this.handleTextArea}/>
                                             </div>
                                             <div className="comment_btn_div">
                                                 <span className="comment_length">{this.state.textarea_length} / 300</span>
-                                                <button className="comment_btn btn">등록</button>
+                                                <button className="comment_btn btn" onClick={this.handleSubmitComment}>등록</button>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div>
+                                    <div className="comments_div">
                                         
                                         { this.props.comment && this.props.comment.map( (comment) =>{
-                                           console.log('길이: '+this.props.comment.length);
                                            return(
-                                                <div key={comment.idx}>
-                                                    <div>{new Date(comment.ins_date).toLocaleDateString()}</div>
-                                                    <div>{new Date(comment.upd_date).toLocaleDateString()}</div>
+                                                <div className="comments_inner_div" key={comment.idx}>
+                                                    <div>{comment.writer}</div>
+                                                    <div>{new Date(comment.upd_date).toLocaleString()}</div>
                                                     <div>{comment.comment}</div>
+                                                    <div className="comments_inner_div_footer">
+                                                        <button className="reply_btn btn">답글</button>
+                                                        <span className="recommend_icon_div">
+                                                           <FavoriteOutlinedIcon className="recommend_icon" />
+                                                           <span className="recommend_count">{comment.recommend}</span>
+                                                        </span>
+                                                    </div>
                                                 </div> 
                                             );
                                         })

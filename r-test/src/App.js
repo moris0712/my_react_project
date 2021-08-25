@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 // import Clock from './components/Clock';
 // import Used_Tool from './components/Used_Tool';
@@ -10,7 +10,6 @@ import Learning from './components/Learning';
 import Slider from "react-slick";
 import "./slick.css";
 import "./slick-theme.css";
-import axios from 'axios';
 import imposter from './img/running_imposter_once.gif'
 
 import main_img1 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-30.jpeg';
@@ -21,7 +20,7 @@ import main_img5 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-44.png';
 import main_img6 from './gallery/KakaoTalk_Photo_2021-07-05-12-41-47.jpeg';
 
 
-axios.defaults.withCredentials = true;
+
 
 // function FadeInSection(props) {
 //   const [isVisible, setVisible] = React.useState(true);

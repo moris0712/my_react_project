@@ -166,27 +166,6 @@ app.get('/logout', function (req, res) {
 
 });
 
-app.post('/profile', function (req, res) {
-
-    var id = req.body.id;
-
-    if (id) {
-        conn.query('SELECT id, name FROM user WHERE id = ?', [id], function (error, results, fields) {
-            if (error) throw error;
-            else {
-                if (results.length > 0) {
-                    res.send({
-                        name: results[0].name,
-                        id: results[0].id
-                    })
-                }
-                else{
-                    console.log('error');
-                }
-            }
-        });
-    }
-});
 
 app.post('/assign_duplicate', function (req, res) {
 
@@ -270,14 +249,14 @@ app.post('/board_comment', function (req, res) {
     var sql ='SELECT idx, comment, parent_idx, '
     sql += '(SELECT name FROM User WHERE idx = writer_idx) as writer, '
     sql += 'ins_date, upd_date, '
-    sql += '(SELECT COUNT(*) FROM Board_recommend WHERE board_idx=? and comment_idx =idx) AS recommend ' // 댓글 추천수
-    sql += '(SELECT EXISTS(SELECT * FROM Board_recommend WHERE comment_idx=idx and user_idx=1)) as isrecommend ' // 내가 댓글 추천했는지
+    sql += '(SELECT COUNT(*) FROM Board_recommend WHERE board_idx=? and comment_idx =idx) AS recommend, ' // 댓글 추천수
+    sql += '(SELECT EXISTS(SELECT * FROM Board_recommend WHERE comment_idx=idx and user_idx=?)) as isrecommend ' // 내가 댓글 추천했는지
     sql += 'FROM Board_comment WHERE board_idx=? and isdelete=0 ' //user_idx 수정할것
     sql += 'ORDER BY upd_date DESC '
-    conn.query(sql, [idx,idx], function (error, results, fields) {
+    conn.query(sql, [idx,req.session.user.idx,idx], function (error, results, fields) {
         if (error) throw error;
         else {
-            console.log(results);
+            // console.log(results);
             res.send(results);
         }
     });
@@ -302,16 +281,43 @@ app.post('/view_count', function (req, res) {
 app.post('/submit_comment', function (req, res) {
     // 댓글등록
     var text = req.body.text;
-    var user_idx = req.body.user_idx;
     var board_idx = req.body.board_idx;
 
-    conn.query('INSERT INTO Board_comment(board_idx, comment, writer_idx) values(?, ?, ?)', [board_idx, text, user_idx], function (error, results, fields) {
+    conn.query('INSERT INTO Board_comment(board_idx, comment, writer_idx) values(?, ?, ?)', [board_idx, text, req.session.user.idx], function (error, results, fields) {
         if (error) throw error;
         else {
             res.send(results);
         }
     });
 });
+
+
+app.post('/comment_recommend', function (req, res) {
+    // 댓글추천
+    var recommend = req.body.recommend;
+    var board_idx = req.body.board_idx;
+    var comment_idx = req.body.comment_idx
+
+    if(recommend==false){
+        conn.query('INSERT INTO Board_recommend (board_idx, comment_idx, user_idx) values(?, ?, ?)', [board_idx, comment_idx, req.session.user.idx], function (error, results, fields) {
+            if (error) throw error;
+            else {
+                res.send(results);
+            }
+        });
+    }
+    else if(recommend==true){
+        conn.query('DELETE FROM Board_recommend WHERE board_idx=? and comment_idx=? and user_idx=?', [board_idx, comment_idx, req.session.user.idx], function (error, results, fields) {
+            if (error) throw error;
+            else {
+                res.send(results);
+            }
+        });
+    }
+    else
+        console.log('알수없는 오류');
+});
+
 
 
 const port = 3001;

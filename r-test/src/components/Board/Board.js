@@ -201,11 +201,11 @@ class Board extends Component {
     handleSearchList = () =>{
         
         const search_list = this.state.Original_Board_List.filter((list) => {
-            if (this.state.value == "제목")
+            if (this.state.value === "제목")
                 return list.title.toLowerCase().includes(this.state.input.toLowerCase());
-            else if (this.state.value == "내용")
+            else if (this.state.value === "내용")
                 return list.content.toLowerCase().includes(this.state.input.toLowerCase());
-            else if (this.state.value == "작성자")
+            else if (this.state.value === "작성자")
                 return list.writer.toLowerCase().includes(this.state.input.toLowerCase());
             else
                 console.log("에러");
@@ -219,7 +219,7 @@ class Board extends Component {
     }
 
     keyPress = (e) =>{
-        if(e.keyCode ==13){
+        if(e.keyCode === 13){
             this.handleSearchList();
         }
     }
@@ -227,7 +227,7 @@ class Board extends Component {
 
     handleOpen = (idx) => {
         const click_list = this.state.Original_Board_List.filter((list) => {
-            return list.idx == idx
+            return list.idx === idx
         });
         
         this.setState({
@@ -246,7 +246,7 @@ class Board extends Component {
             }
         })
             .then(res => {
-                console.log(res);
+                // console.log(res);
             })
             .catch(err => {
                 console.error(err);
@@ -280,7 +280,7 @@ class Board extends Component {
         document.body.style.overflow = "unset"
     };
 
-    No_result = () => { // 진짜 씨발...
+    No_result = () => { // 진짜..
     return (
         <TableRow className="TableRow" key="0">
             <TableCell className="TableCell" colSpan='6' align="center">조건에 맞는 게시물이 존재하지않습니다.</TableCell>
@@ -378,6 +378,7 @@ class Board extends Component {
                     comment={this.state.Board_Comment}
                     idx={this.state.Board_idx}
                     reload_comment={this.load_comment}
+                    nickname={this.props.nickname}
                 />
                 
 

@@ -178,10 +178,20 @@ body{
 .recommend_icon:hover{
     color:aquamarine;
     transform: translateY(-20%) scale(1.2);
-    transition: 0.5s all;
 }
+
+.already_recommend_icon{
+    color:aquamarine;
+    transition: 0.5s all !important;
+    transform: scale(1.2);
+}
+.already_recommend_icon:hover{
+    color:gray;
+    transform: translateY(20%) scale(1);
+}
+
 .recommend_count{
-    margin-left: 0.3em;
+    margin-left: 0.5em;
 }
 .comments_inner_div_footer{
     margin-top: 1em !important;

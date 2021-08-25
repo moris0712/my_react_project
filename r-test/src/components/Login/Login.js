@@ -41,7 +41,7 @@ class Login extends Component{
         })
         .then( res => {
 
-            if(res.data.isLoggedin == false){
+            if(res.data.isLoggedin === false){
                 alert(res.data.message);
             }
             else{

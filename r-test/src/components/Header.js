@@ -1,9 +1,9 @@
-import { render } from 'react-dom';
+// import { render } from 'react-dom';
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router , Switch, Route, Link } from 'react-router-dom';
 
-import Used_Tool from './Used_Tool';
-import Clock from './Clock';
+// import Used_Tool from './Used_Tool';
+// import Clock from './Clock';
 // import Login from './Login/Login';
 import Assign from './Login/Assign';
 import Board from './Board/Board';
@@ -138,7 +138,7 @@ function Header() {
                     <Route path="/" exact component={Home} />
                     <Route path="/login" component={Login}/>
                     <Route path="/assign" component={Assign} />
-                    <Route path="/board" component={Board} />
+                    <Route path="/board" render={() => <Board nickname={nickname} /> } />
                 </Switch>
             </Suspense>
         </Router>

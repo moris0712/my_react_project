@@ -27,6 +27,8 @@ class Modal extends Component {
         // console.log(this.state.textarea_length);
     };
 
+
+
     handleSubmitComment = (e) => {
         if(this.state.textarea_length>300)
             alert('댓글은 300자 이하로 입력해주세요.');
@@ -37,8 +39,7 @@ class Modal extends Component {
                     url: 'http://localhost:3001/submit_comment',
                     data: {
                         text: this.state.textarea,
-                        board_idx: this.props.idx,
-                        user_idx: JSON.parse(sessionStorage.getItem('useInfo')).idx
+                        board_idx: this.props.idx
                     }
                 })
                 .then(res => {
@@ -53,6 +54,25 @@ class Modal extends Component {
                 });
             }
         }
+    }
+
+    handleRecommend = (isrecommend,comment_idx) => {
+        axios({
+            method: "post",
+            url: 'http://localhost:3001/comment_recommend',
+            data: {
+                recommend: isrecommend,
+                board_idx: this.props.idx,
+                comment_idx: comment_idx
+            }
+        })
+            .then(res => {
+                this.props.reload_comment(this.props.idx);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        
     }
 
     getTextLength = (str) => { // 영어 1바이트 한글 2바이트
@@ -87,7 +107,7 @@ class Modal extends Component {
                                     <div className="comment_div">
                                         <div className="comment_count">{this.props.comment.length} Comment(s)</div>
                                         <div className="comment_inner_div">
-                                            <div className="id">{JSON.parse(sessionStorage.getItem('useInfo')).name}</div>
+                                            <div className="id">{this.props.nickname}</div>
                                             <div className='comment_input_div'>
                                                 <textarea className='comment_input' name="comment" value={this.state.textarea} placeholder="댓글을 남겨주세요" onChange={this.handleTextArea}/>
                                             </div>
@@ -109,7 +129,7 @@ class Modal extends Component {
                                                     <div className="comments_inner_div_footer">
                                                         <button className="reply_btn btn">답글</button>
                                                         <span className="recommend_icon_div">
-                                                           <FavoriteOutlinedIcon className="recommend_icon" />
+                                                           <FavoriteOutlinedIcon className={comment.isrecommend ? "already_recommend_icon" : "recommend_icon"} onClick={() => { this.handleRecommend(comment.isrecommend, comment.idx)}}/>
                                                            <span className="recommend_count">{comment.recommend}</span>
                                                         </span>
                                                     </div>

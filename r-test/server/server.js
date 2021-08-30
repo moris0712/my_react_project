@@ -246,20 +246,26 @@ app.post('/board_comment', function (req, res) {
     // 게시판 상세보기
     var idx = req.body.idx;
 
-    var sql ='SELECT idx, comment, parent_idx, '
-    sql += '(SELECT name FROM User WHERE idx = writer_idx) as writer, '
-    sql += 'ins_date, upd_date, '
-    sql += '(SELECT COUNT(*) FROM Board_recommend WHERE board_idx=? and comment_idx =idx) AS recommend, ' // 댓글 추천수
-    sql += '(SELECT EXISTS(SELECT * FROM Board_recommend WHERE comment_idx=idx and user_idx=?)) as isrecommend ' // 내가 댓글 추천했는지
-    sql += 'FROM Board_comment WHERE board_idx=? and isdelete=0 ' //user_idx 수정할것
-    sql += 'ORDER BY upd_date DESC '
-    conn.query(sql, [idx,req.session.user.idx,idx], function (error, results, fields) {
-        if (error) throw error;
-        else {
-            // console.log(results);
-            res.send(results);
-        }
-    });
+    if (!req.session.user){
+        res.send("<script>alert('로그인이 필요합니다');</script>");
+    }
+
+    else{
+        var sql ='SELECT idx, comment, parent_idx, '
+        sql += '(SELECT name FROM User WHERE idx = writer_idx) as writer, '
+        sql += 'ins_date, upd_date, '
+        sql += '(SELECT COUNT(*) FROM Board_recommend WHERE board_idx=? and comment_idx =idx) AS recommend, ' // 댓글 추천수
+        sql += '(SELECT EXISTS(SELECT * FROM Board_recommend WHERE comment_idx=idx and user_idx=?)) as isrecommend ' // 내가 댓글 추천했는지
+        sql += 'FROM Board_comment WHERE board_idx=? and isdelete=0 ' //user_idx 수정할것
+        sql += 'ORDER BY upd_date DESC '
+        conn.query(sql, [idx,req.session.user.idx,idx], function (error, results, fields) {
+            if (error) throw error;
+            else {
+                // console.log(results);
+                res.send(results);
+            }
+        });
+    }
 });
 
 
@@ -289,6 +295,8 @@ app.post('/submit_comment', function (req, res) {
             res.send(results);
         }
     });
+
+    
 });
 
 

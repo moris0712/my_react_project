@@ -138,7 +138,7 @@ function Header() {
                     <Route path="/" exact component={Home} />
                     <Route path="/login" component={Login}/>
                     <Route path="/assign" component={Assign} />
-                    <Route path="/board" render={() => <Board nickname={nickname} /> } />
+                    <Route path="/board" render={() => <Board nickname={nickname} isLogin={isLogin}/> } />
                 </Switch>
             </Suspense>
         </Router>

@@ -226,33 +226,42 @@ class Board extends Component {
 
 
     handleOpen = (idx) => {
-        const click_list = this.state.Original_Board_List.filter((list) => {
-            return list.idx === idx
-        });
-        
-        this.setState({
-            Board_Content: click_list,
-            open: true,
-            Board_idx: idx
-        })
-        
-        this.load_comment(idx);
 
-        axios({
-            method: "post",
-            url: 'http://localhost:3001/view_count',
-            data: {
-                idx: idx
-            }
-        })
-            .then(res => {
-                // console.log(res);
-            })
-            .catch(err => {
-                console.error(err);
+        if(!this.props.isLogin){
+            alert('로그인이 필요한 서비스입니다.');
+            document.location.href="/login"
+        }
+        else{
+            const click_list = this.state.Original_Board_List.filter((list) => {
+                return list.idx === idx
             });
+
+            this.setState({
+                Board_Content: click_list,
+                open: true,
+                Board_idx: idx
+            })
+
+            this.load_comment(idx);
+
+            axios({
+                method: "post",
+                url: 'http://localhost:3001/view_count',
+                data: {
+                    idx: idx
+                }
+            })
+                .then(res => {
+                    // console.log(res);
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+
+            document.body.style.overflow = "hidden";
+        }
+
         
-        document.body.style.overflow = "hidden";
     };
 
     load_comment = (idx) => {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import './Modal.css';
 import axios from 'axios';
-import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
+import Comment from './Comment';
 
 class Modal extends Component {
 
@@ -12,10 +12,15 @@ class Modal extends Component {
         this.handleSubmitComment = this.handleSubmitComment.bind(this);
 
         this.state = {
+            Board_Comment: '',
             textarea_length: 0,
             textarea: ''
-        }; // user_idx: 유저 idx (게시판글쓸때 수정), 나머지는 싹다 board 변수
+        }; 
 
+    }
+
+    componentDidMount() {  // 모달창 열리자마자 댓글불러오기
+        this.load_comment(this.props.idx);
     }
 
     handleTextArea = (e) => {
@@ -47,7 +52,7 @@ class Modal extends Component {
                         textarea: '',
                         textarea_length: 0
                     })
-                    this.props.reload_comment(this.props.idx);
+                    this.load_comment(this.props.idx);
                 })
                 .catch(err => {
                     console.error(err);
@@ -56,24 +61,26 @@ class Modal extends Component {
         }
     }
 
-    handleRecommend = (isrecommend,comment_idx) => {
+    load_comment = (idx) => { // 댓글 불러오기 / 댓글 새로고침
         axios({
             method: "post",
-            url: 'http://localhost:3001/comment_recommend',
+            url: 'http://localhost:3001/board_comment',
             data: {
-                recommend: isrecommend,
-                board_idx: this.props.idx,
-                comment_idx: comment_idx
+                idx: idx
             }
         })
             .then(res => {
-                this.props.reload_comment(this.props.idx);
+                this.setState({
+                    Board_Comment: res.data
+                })
             })
             .catch(err => {
                 console.error(err);
             });
-        
+
     }
+
+
 
     getTextLength = (str) => { // 영어 1바이트 한글 2바이트
         var len = 0;
@@ -105,7 +112,7 @@ class Modal extends Component {
                                 <main>
                                     {content.content}
                                     <div className="comment_div">
-                                        <div className="comment_count">{this.props.comment.length} Comment(s)</div>
+                                        <div className="comment_count">{this.state.Board_Comment.length} Comment(s)</div>
                                         <div className="comment_inner_div">
                                             <div className="id">{this.props.nickname}</div>
                                             <div className='comment_input_div'>
@@ -120,22 +127,17 @@ class Modal extends Component {
 
                                     <div className="comments_div">
                                         
-                                        { this.props.comment && this.props.comment.map( (comment) =>{
-                                           return(
-                                                <div className="comments_inner_div" key={comment.idx}>
-                                                    <div>{comment.writer}</div>
-                                                    <div>{new Date(comment.upd_date).toLocaleString()}</div>
-                                                    <div>{comment.comment}</div>
-                                                    <div className="comments_inner_div_footer">
-                                                        <button className="reply_btn btn">답글</button>
-                                                        <span className="recommend_icon_div">
-                                                           <FavoriteOutlinedIcon className={comment.isrecommend ? "already_recommend_icon" : "recommend_icon"} onClick={() => { this.handleRecommend(comment.isrecommend, comment.idx)}}/>
-                                                           <span className="recommend_count">{comment.recommend}</span>
-                                                        </span>
-                                                    </div>
-                                                </div> 
-                                            );
-                                        })
+                                        { this.state.Board_Comment && this.state.Board_Comment.map( 
+                                            (comment, index) =>
+                                                comment.parent_idx==0 && (
+                                                    <Comment
+                                                        key={index}
+                                                        comment={comment}
+                                                        board_idx={this.props.idx}
+                                                        reload_comment={this.load_comment}
+                                                    />
+                                                )
+                                            )
                                         }
                                     </div>
                                 </main>

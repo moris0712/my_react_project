@@ -243,11 +243,11 @@ app.get('/board', function (req, res) {
 
 
 app.post('/board_comment', function (req, res) {
-    // 게시판 상세보기
+    // 게시판 댓글 불러오기
     var idx = req.body.idx;
 
     if (!req.session.user){
-        res.send("<script>alert('로그인이 필요합니다');</script>");
+        res.send(is);
     }
 
     else{
@@ -256,12 +256,11 @@ app.post('/board_comment', function (req, res) {
         sql += 'ins_date, upd_date, '
         sql += '(SELECT COUNT(*) FROM Board_recommend WHERE board_idx=? and comment_idx =idx) AS recommend, ' // 댓글 추천수
         sql += '(SELECT EXISTS(SELECT * FROM Board_recommend WHERE comment_idx=idx and user_idx=?)) as isrecommend ' // 내가 댓글 추천했는지
-        sql += 'FROM Board_comment WHERE board_idx=? and isdelete=0 ' //user_idx 수정할것
+        sql += 'FROM Board_comment WHERE board_idx=? and isdelete=0 ' 
         sql += 'ORDER BY upd_date DESC '
         conn.query(sql, [idx,req.session.user.idx,idx], function (error, results, fields) {
             if (error) throw error;
             else {
-                // console.log(results);
                 res.send(results);
             }
         });
@@ -304,7 +303,7 @@ app.post('/comment_recommend', function (req, res) {
     // 댓글추천
     var recommend = req.body.recommend;
     var board_idx = req.body.board_idx;
-    var comment_idx = req.body.comment_idx
+    var comment_idx = req.body.comment_idx;
 
     if(recommend==false){
         conn.query('INSERT INTO Board_recommend (board_idx, comment_idx, user_idx) values(?, ?, ?)', [board_idx, comment_idx, req.session.user.idx], function (error, results, fields) {

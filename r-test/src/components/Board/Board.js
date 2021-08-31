@@ -150,12 +150,7 @@ class Board extends Component {
     componentDidMount() {
         this.load_list();
         // 시작하자마자 게시판 리스트 불러오기
-
-        if (sessionStorage.getItem('useInfo') === null) {
-            this.setState({isLogin: false });
-        } else {
-            this.setState({isLogin : true});
-        }
+ 
     }
 
 
@@ -198,7 +193,7 @@ class Board extends Component {
         this.setState({ input: event.target.value});
     }
     
-    handleSearchList = () =>{
+    handleSearchList = () =>{ // 게시판 검색
         
         const search_list = this.state.Original_Board_List.filter((list) => {
             if (this.state.value === "제목")
@@ -218,15 +213,15 @@ class Board extends Component {
 
     }
 
-    keyPress = (e) =>{
+    keyPress = (e) =>{ // textarea 엔터키 제출
         if(e.keyCode === 13){
             this.handleSearchList();
         }
     }
 
 
-    handleOpen = (idx) => {
-
+    handleOpen = (idx) => { // 모달창 열기
+ 
         if(!this.props.isLogin){
             alert('로그인이 필요한 서비스입니다.');
             document.location.href="/login"
@@ -242,7 +237,6 @@ class Board extends Component {
                 Board_idx: idx
             })
 
-            this.load_comment(idx);
 
             axios({
                 method: "post",
@@ -264,23 +258,7 @@ class Board extends Component {
         
     };
 
-    load_comment = (idx) => {
-        axios({
-            method: "post",
-            url: 'http://localhost:3001/board_comment',
-            data: {
-                idx: idx
-            }
-        })
-            .then(res => {
-                this.setState({
-                    Board_Comment: res.data
-                })
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }
+
 
 
 
@@ -381,14 +359,15 @@ class Board extends Component {
                     </Paper>
                 </div>
                 
-                <Modal open={this.state.open}
-                    close={this.handleClose}
-                    content={this.state.Board_Content}
-                    comment={this.state.Board_Comment}
-                    idx={this.state.Board_idx}
-                    reload_comment={this.load_comment}
-                    nickname={this.props.nickname}
-                />
+                { this.state.open && (
+                    <Modal open={this.state.open}
+                        close={this.handleClose}
+                        content={this.state.Board_Content}
+                        idx={this.state.Board_idx}
+                        nickname={this.props.nickname}
+                    />
+                    )
+                }
                 
 
                 <div className="btn_div">

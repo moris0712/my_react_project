@@ -1,11 +1,15 @@
 import React, { Component } from "react";
 import './Modal.css';
 import axios from 'axios';
+// import Reply from './Reply';
 import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
 
 
 
 function Comment (props) {
+
+    const [OpenReply, setOpenReply] = React.useState(false);
+    const [Reply_Comment, setReply_Comment] = React.useState('');
 
     const handleRecommend = () => {
         axios({
@@ -26,21 +30,19 @@ function Comment (props) {
     }
 
 
+
     return(
-        <div className="comments_inner_div" key={props.comment.idx}>
+        <div className="comments_inner_div" >
             <div>{props.comment.writer}</div>
             <div>{new Date(props.comment.upd_date).toLocaleString()}</div>
             <div>{props.comment.comment}</div>
             <div className="comments_inner_div_footer">
                 <div>
-                    <button className="reply_btn btn" onClick={() => { this.show_reply_comment(props.comment.idx) }}>답글</button>
                     <span className="recommend_icon_div">
                         <FavoriteOutlinedIcon className={props.comment.isrecommend ? "already_recommend_icon" : "recommend_icon"} onClick={handleRecommend} />
                         <span className="recommend_count">{props.comment.recommend}</span>
                     </span>
                 </div>
-
-
             </div>
         </div>
     );

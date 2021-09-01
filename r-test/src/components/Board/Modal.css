@@ -157,7 +157,6 @@ body{
 .comments_inner_div{
     padding: 1em;
     border-top: 0.1em solid #dee2e6;
-    border-bottom: 0.1em solid #dee2e6;
     overflow: hidden;
 }
 .comments_inner_div div{
@@ -197,3 +196,18 @@ body{
     margin-top: 1em !important;
 }
 
+.view_reply_more_btn{
+    margin-left: 1em;
+    color:#6c757d;
+}
+
+.reply_comments_inner_div{
+    padding: 1em;
+    border-top: 0.1em solid #dee2e6;
+    overflow: hidden;
+    margin-left: 2em;
+}
+
+.reply_comments_inner_div div{
+    margin: 0.3em 0 0.3em 0;
+}

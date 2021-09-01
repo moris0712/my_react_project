@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import './Modal.css';
 import axios from 'axios';
 import Comment from './Comment';
+import Reply from './Reply';
 
 class Modal extends Component {
 
@@ -127,17 +128,26 @@ class Modal extends Component {
 
                                     <div className="comments_div">
                                         
-                                        { this.state.Board_Comment && this.state.Board_Comment.map( 
-                                            (comment, index) =>
-                                                comment.parent_idx==0 && (
-                                                    <Comment
-                                                        key={index}
-                                                        comment={comment}
-                                                        board_idx={this.props.idx}
-                                                        reload_comment={this.load_comment}
-                                                    />
+                                        { this.state.Board_Comment && 
+                                            this.state.Board_Comment.map( 
+                                                (comment, index) =>
+                                                    comment.parent_idx==0 && (
+                                                        <React.Fragment key={index}>
+                                                            <Comment
+                                                                comment={comment}
+                                                                board_idx={this.props.idx}
+                                                                reload_comment={this.load_comment}
+                                                            />
+                                                            <Reply
+                                                                key ={index}
+                                                                commentList={this.state.Board_Comment}
+                                                                parentCommentId={comment.idx}
+                                                                board_idx={this.props.idx}
+                                                                reload_comment={this.load_comment}
+                                                            />
+                                                        </React.Fragment>
+                                                    )
                                                 )
-                                            )
                                         }
                                     </div>
                                 </main>

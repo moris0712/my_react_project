@@ -159,8 +159,8 @@ body{
     border-top: 0.1em solid #dee2e6;
     overflow: hidden;
 }
-.comments_inner_div div{
-    margin: 0.3em 0 0.3em 0;
+.commentsjs_div div{
+    margin: 0.5em 0 0.5em 0;
 }
 .reply_btn{
     float: left;
@@ -197,17 +197,50 @@ body{
 }
 
 .view_reply_more_btn{
-    margin-left: 1em;
     color:#6c757d;
 }
 
 .reply_comments_inner_div{
-    padding: 1em;
+    padding: 1em 0 1em 0;
     border-top: 0.1em solid #dee2e6;
     overflow: hidden;
-    margin-left: 2em;
+    clear: both;
+    display: flex;
 }
 
 .reply_comments_inner_div div{
-    margin: 0.3em 0 0.3em 0;
+    margin: 0.5em 0 0.5em 0;
 }
+.arrow{
+    width: 7%;
+    height: 7%;
+}
+.reply_comments{
+    margin-left: 1em;
+    flex-grow: 1;
+}
+
+
+.reply_comment_div{
+    margin-left: 1em;
+    margin-top: 1em;
+}
+
+.reply_comment_inner_div{
+    padding: 0.3em 0.1 1em 0.1em;
+    border: 0.1em solid #dee2e6;
+    font-size: 1.2em;
+    overflow: hidden;
+    width: 27em;
+}
+.reply_comment_input_div{
+    text-align: center;
+}
+
+.reply_comment_input{
+    width: 33em;
+    height: 5em;
+    resize: none;
+    border: none;
+    overflow: hidden;
+}   

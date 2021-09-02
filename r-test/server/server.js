@@ -287,8 +287,12 @@ app.post('/submit_comment', function (req, res) {
     // 댓글등록
     var text = req.body.text;
     var board_idx = req.body.board_idx;
+    var parentcomment_idx = req.body.parentcomment_idx;
 
-    conn.query('INSERT INTO Board_comment(board_idx, comment, writer_idx) values(?, ?, ?)', [board_idx, text, req.session.user.idx], function (error, results, fields) {
+    if(parentcomment_idx==undefined)
+        parentcomment_idx=0;
+        
+    conn.query('INSERT INTO Board_comment(board_idx, comment, parent_idx, writer_idx) values(?, ?, ?, ?)', [board_idx, text, parentcomment_idx, req.session.user.idx], function (error, results, fields) {
         if (error) throw error;
         else {
             res.send(results);
@@ -325,26 +329,7 @@ app.post('/comment_recommend', function (req, res) {
         console.log('알수없는 오류');
 });
 
-// app.post('/reply_comment', function (req,res) {
-//     //답글 불러오기
-//     var board_idx = req.body.board_idx;
-//     var comment_idx = req.body.comment_idx;
 
-//     var sql = 'SELECT idx, comment, parent_idx, '
-//     sql += '(SELECT name FROM User WHERE idx = writer_idx) as writer, '
-//     sql += 'ins_date, upd_date, '
-//     sql += '(SELECT COUNT(*) FROM Board_recommend WHERE board_idx=? and comment_idx =idx) AS recommend, ' // 댓글 추천수
-//     sql += '(SELECT EXISTS(SELECT * FROM Board_recommend WHERE comment_idx=idx and user_idx=?)) as isrecommend ' // 내가 댓글 추천했는지
-//     sql += 'FROM Board_comment WHERE board_idx=? and parent_idx=? and isdelete=0 '
-//     sql += 'ORDER BY upd_date DESC '
-
-//     conn.query(sql, [board_idx, req.session.user.idx, board_idx, comment_idx], function (error, results, fields) {
-//         if (error) throw error;
-//         else {
-//             res.send(results);
-//         }
-//     });
-// });
 
 
 

@@ -1,13 +1,17 @@
 import React, { Component } from "react";
 import './Modal.css';
+import axios from 'axios';
 import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
-
+import Arrow from '../../img/arrow.png'
 
 
 function Reply(props) {
 
     const [ChildCommentNumber, setChildCommentNumber] = React.useState(0);
     const [OpenReplyComments, setOpenReplyComments] = React.useState(false);
+    const [TextArea, setTextArea] = React.useState('');
+    const [TextLength, setTextLength] = React.useState(0);
+   
     React.useEffect(() => {
         let commentNumber = 0;
         props.commentList.map((comment, index) => {
@@ -18,28 +22,52 @@ function Reply(props) {
         setChildCommentNumber(commentNumber);
     }, [props.commentList]); //commentList가 바뀔때마다 실행이될 수 있도록해야됨
 
+    const handleTextArea = (event) => {
+        setTextLength(props.getTextLength(event.currentTarget.value))
+        setTextArea(event.currentTarget.value);
+    }
+
 
     const renderReplyComment = (parentCommentId) => 
-    
-        props.commentList.map((comment, index) => (
-            <React.Fragment key={index} >
-                {comment.parent_idx === parentCommentId && (
-                    <div className="reply_comments_inner_div">
-                        <div>{comment.writer}</div>
-                        <div>{new Date(comment.upd_date).toLocaleString()}</div>
-                        <div>{comment.comment}</div>
-                        <div className="comments_inner_div_footer">
-                            <div>
-                                <span className="recommend_icon_div">
-                                    <FavoriteOutlinedIcon className={comment.isrecommend ? "already_recommend_icon" : "recommend_icon"} />
-                                    <span className="recommend_count">{comment.recommend}</span>
-                                </span>
-                            </div>
+        
+            props.commentList.map((comment, index) => (
+                <React.Fragment key={index} >
+                    {comment.parent_idx === parentCommentId && (
+                        <div className="reply_comments_inner_div">
+                            <img className="arrow" src={Arrow} />
+                            <span className="reply_comments">
+                                <div>{comment.writer}</div>
+                                <div>{new Date(comment.upd_date).toLocaleString()}</div>
+                                <div>{comment.comment}</div>
+                                <div className="comments_inner_div_footer">
+                                    <div>
+                                        <span className="recommend_icon_div">
+                                            <FavoriteOutlinedIcon className={comment.isrecommend ? "already_recommend_icon" : "recommend_icon"} onClick={() => props.handleRecommend(comment.isrecommend, props.board_idx, comment.idx)} />
+                                            <span className="recommend_count">{comment.recommend}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </span>
                         </div>
+                    )}
+                </React.Fragment>
+            )).concat(
+            <div className="reply_comment_div" key={parentCommentId}>
+                <div className="reply_comment_inner_div">
+                    <div className="id">{props.nickname}</div>
+                    <div className='reply_comment_input_div'>
+                        <textarea className='reply_comment_input' name="comment" value={TextArea} placeholder="댓글을 남겨주세요" onChange={handleTextArea} />
                     </div>
-                )}
-            </React.Fragment>
-        ));
+                    <div className="comment_btn_div">
+                        <span className="comment_length">{TextLength} / 300</span>
+                            <button className="comment_btn btn" onClick={()=> {props.handleSubmitComment(TextArea, TextLength, props.board_idx, props.parentCommentId)}}>등록</button>
+                    </div>
+                </div>
+            </div>
+            )
+
+  
+
   
     const onHandleChange = () => {
         setOpenReplyComments(!OpenReplyComments);

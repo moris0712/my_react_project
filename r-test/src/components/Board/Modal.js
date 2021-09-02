@@ -35,8 +35,8 @@ class Modal extends Component {
 
 
 
-    handleSubmitComment = (e) => {
-        if(this.state.textarea_length>300)
+    handleSubmitComment = (textarea,textarea_length,board_idx,parentcomment_idx) => {
+        if(textarea_length>300)
             alert('댓글은 300자 이하로 입력해주세요.');
         else{
             if(window.confirm('댓글을 등록하시겠습니까?')){
@@ -44,8 +44,9 @@ class Modal extends Component {
                     method: "post",
                     url: 'http://localhost:3001/submit_comment',
                     data: {
-                        text: this.state.textarea,
-                        board_idx: this.props.idx
+                        text: textarea,
+                        board_idx: board_idx,
+                        parentcomment_idx: parentcomment_idx
                     }
                 })
                 .then(res => {
@@ -53,7 +54,7 @@ class Modal extends Component {
                         textarea: '',
                         textarea_length: 0
                     })
-                    this.load_comment(this.props.idx);
+                    this.load_comment(board_idx);
                 })
                 .catch(err => {
                     console.error(err);
@@ -94,6 +95,26 @@ class Modal extends Component {
         return len;
     }
 
+
+    handleRecommend = (isrecommend,board_idx,comment_idx) => {
+        axios({
+            method: "post",
+            url: 'http://localhost:3001/comment_recommend',
+            data: {
+                recommend: isrecommend,
+                board_idx: board_idx,
+                comment_idx: comment_idx
+            }
+        })
+            .then(res => {
+                this.load_comment(board_idx);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
+
+
     render(){
         return(
             <div className={this.props.open ? 'openModal modal' : 'modal'}>
@@ -121,7 +142,7 @@ class Modal extends Component {
                                             </div>
                                             <div className="comment_btn_div">
                                                 <span className="comment_length">{this.state.textarea_length} / 300</span>
-                                                <button className="comment_btn btn" onClick={this.handleSubmitComment}>등록</button>
+                                                <button className="comment_btn btn" onClick={()=> {this.handleSubmitComment(this.state.textarea,this.state.textarea_length,this.props.idx)}}>등록</button>
                                             </div>
                                         </div>
                                     </div>
@@ -133,18 +154,25 @@ class Modal extends Component {
                                                 (comment, index) =>
                                                     comment.parent_idx==0 && (
                                                         <React.Fragment key={index}>
-                                                            <Comment
-                                                                comment={comment}
-                                                                board_idx={this.props.idx}
-                                                                reload_comment={this.load_comment}
-                                                            />
-                                                            <Reply
-                                                                key ={index}
-                                                                commentList={this.state.Board_Comment}
-                                                                parentCommentId={comment.idx}
-                                                                board_idx={this.props.idx}
-                                                                reload_comment={this.load_comment}
-                                                            />
+                                                            <div className="comments_inner_div">
+                                                                <Comment
+                                                                    comment={comment}
+                                                                    board_idx={this.props.idx}
+                                                                    reload_comment={this.load_comment}
+                                                                    handleRecommend={this.handleRecommend}
+                                                                />
+                                                                <Reply
+                                                                    key ={index}
+                                                                    commentList={this.state.Board_Comment}
+                                                                    parentCommentId={comment.idx}
+                                                                    board_idx={this.props.idx}
+                                                                    reload_comment={this.load_comment}
+                                                                    nickname={this.props.nickname}
+                                                                    handleSubmitComment={this.handleSubmitComment}
+                                                                    getTextLength={this.getTextLength}
+                                                                    handleRecommend={this.handleRecommend}
+                                                                />
+                                                            </div>
                                                         </React.Fragment>
                                                     )
                                                 )

@@ -24,6 +24,7 @@ class Modal extends Component {
         this.load_comment(this.props.idx);
     }
 
+
     handleTextArea = (e) => {
         
         this.setState({
@@ -114,6 +115,26 @@ class Modal extends Component {
             });
     }
 
+    comment_delete = (board_idx,comment_idx, parent_idx) => {
+
+        if(window.confirm('정말 댓글을 삭제하시겠습니까?')){
+            axios({
+                method: "post",
+                url: 'http://localhost:3001/delete_comment',
+                data: {
+                    board_idx: board_idx,
+                    comment_idx: comment_idx
+                }
+            })
+                .then(res => {
+                    this.load_comment(board_idx);
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+            }
+    }
+
 
     render(){
         return(
@@ -158,19 +179,19 @@ class Modal extends Component {
                                                                 <Comment
                                                                     comment={comment}
                                                                     board_idx={this.props.idx}
-                                                                    reload_comment={this.load_comment}
                                                                     handleRecommend={this.handleRecommend}
+                                                                    comment_delete={this.comment_delete}
                                                                 />
                                                                 <Reply
                                                                     key ={index}
                                                                     commentList={this.state.Board_Comment}
                                                                     parentCommentId={comment.idx}
                                                                     board_idx={this.props.idx}
-                                                                    reload_comment={this.load_comment}
                                                                     nickname={this.props.nickname}
                                                                     handleSubmitComment={this.handleSubmitComment}
                                                                     getTextLength={this.getTextLength}
                                                                     handleRecommend={this.handleRecommend}
+                                                                    comment_delete={this.comment_delete}
                                                                 />
                                                             </div>
                                                         </React.Fragment>

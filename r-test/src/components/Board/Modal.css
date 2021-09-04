@@ -245,9 +245,10 @@ body{
     overflow: hidden;
 }   
 
-
+.comment_edit_delete_btn{
+    float: right;
+}
 
 .comment_edit_delete_btn :nth-child(1){
     margin-right: 0.5em;
-
 }

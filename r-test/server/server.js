@@ -226,9 +226,9 @@ app.get('/board', function (req, res) {
     // 게시판 전체리스트
     var sql = 'SELECT rownum, idx, title, content, writer, ins_date, upd_date,hit '
     sql += 'FROM ( SELECT @rownum:=@rownum+1 AS rownum '
-    sql += ', idx, title, content, (SELECT id FROM User WHERE writer_idx = idx) as writer, ins_date, upd_date, hit, isdelete '
+    sql += ', idx, title, content, (SELECT id FROM User WHERE writer_idx = idx) as writer, ins_date, upd_date, hit '
     sql += 'FROM Board B , '
-    sql += '( SELECT @rownum := 0 ) R Where isdelete=0 '
+    sql += '( SELECT @rownum := 0 ) R '
     sql += 'ORDER BY upd_date ASC ) SUB '
     sql += 'ORDER BY SUB.rownum DESC;'
     // 대충 게시판 목록 불러와서 행번호 역순으로 메기는 질의문
@@ -258,7 +258,7 @@ app.post('/board_comment', function (req, res) {
         sql += '(SELECT COUNT(*) FROM Board_recommend WHERE board_idx=? and comment_idx =idx) AS recommend, ' // 댓글 추천수
         sql += '(SELECT EXISTS(SELECT * FROM Board_recommend WHERE comment_idx=idx and user_idx=?)) as isrecommend, ' // 내가 댓글 추천했는지
         sql += '( IF(writer_idx=?, '+true+','+false+')) AS ismine '
-        sql += 'FROM Board_comment WHERE board_idx=? and isdelete=0 ' 
+        sql += 'FROM Board_comment WHERE board_idx=? ' 
         sql += 'ORDER BY upd_date DESC '
         conn.query(sql, [idx, req.session.user.idx, req.session.user.idx,idx], function (error, results, fields) {
             if (error) throw error;
@@ -331,6 +331,57 @@ app.post('/comment_recommend', function (req, res) {
         console.log('알수없는 오류');
 });
 
+app.post('/delete_comment', function (req, res) {
+    // 댓글삭제 
+    var board_idx = req.body.board_idx;
+    var comment_idx = req.body.comment_idx;
+
+    conn.query('SELECT * FROM Board_comment WHERE board_idx=? and (idx =? or parent_idx=?)', [board_idx, comment_idx ,comment_idx], function (error, results, fields) {
+        if (error) throw error;
+        else {
+            for(var i=0; i<results.length; i++){
+                conn.query('INSERT INTO DEL_Board_comment SET ? ', [results[i]], function (error, results, fields) {
+                    if (error) throw error;
+                    else {
+                        console.log('댓글 삭제 보관 테이블로 이동');
+                    }
+                });
+            }
+            conn.query('DELETE FROM Board_comment WHERE board_idx =? and (idx =? or parent_idx=?)', [board_idx, comment_idx, comment_idx], function (error, results, fields) {
+                if (error) throw error;
+                else {
+                    console.log('댓글 삭제');
+                    res.send(results);
+                }
+            });
+            
+
+        }
+    });
+    
+    // else{ // 자식댓글 없앨때
+    //     conn.query('SELECT * FROM Board_comment WHERE board_idx=? and idx=?', [board_idx, comment_idx], function (error, results, fields) {
+    //         if (error) throw error;
+    //         else {
+    //             conn.query('INSERT INTO DEL_Board_comment SET ? ',[results[0]], function (error, results, fields) {
+    //                 if (error) throw error;
+    //                 else{
+    //                     console.log('댓글 삭제 보관 테이블로 이동');
+    //                 }
+    //             });
+    //             conn.query('DELETE FROM Board_comment WHERE board_idx =? and idx =?', [board_idx, comment_idx], function (error, results, fields) {
+    //                 if (error) throw error;
+    //                 else {
+    //                     console.log('댓글 삭제');
+    //                     res.send(results);
+    //                 }
+    //             });
+
+    //         }
+    //     });
+    // }
+ 
+});
 
 
 

@@ -20,6 +20,9 @@ function Reply(props) {
             }
         });
         setChildCommentNumber(commentNumber);
+        setOpenReplyComments(false);
+        setTextArea('');
+        setTextLength(0);
     }, [props.commentList]); //commentList가 바뀔때마다 실행이될 수 있도록해야됨
 
 
@@ -37,19 +40,18 @@ function Reply(props) {
                         <div className="reply_comments_inner_div">
                             <img className="arrow" src={Arrow} />
                             <span className="reply_comments">
-                                <div>{comment.writer}</div>
+                                <div>{comment.writer}
+                                    {comment.ismine == true && (
+                                        <span className="comment_edit_delete_btn">
+                                            <button>수정</button>
+                                            <button onClick={() => props.comment_delete(props.board_idx, comment.idx)}>삭제</button>
+                                        </span>
+                                        )
+                                    }
+                                </div>
                                 <div>{new Date(comment.upd_date).toLocaleString()}</div>
                                 <div>{comment.comment}</div>
                                 <div className={comment.ismine==true ? "comments_inner_div_footer" : ""} >
-
-                                        {comment.ismine==true  && (
-                                            <span className="comment_edit_delete_btn">
-                                                <button>수정</button>
-                                                <button>삭제</button>
-                                            </span>
-                                            )
-                                        }
-
                                         <span className="recommend_icon_div">
                                             <FavoriteOutlinedIcon className={comment.isrecommend ? "already_recommend_icon" : "recommend_icon"} onClick={() => props.handleRecommend(comment.isrecommend, props.board_idx, comment.idx)} />
                                             <span className="recommend_count">{comment.recommend}</span>
@@ -60,20 +62,22 @@ function Reply(props) {
                     )}
                 </React.Fragment>
             )).concat(
-            <div className="reply_comment_div" key="-1"> {/* key가 중복되서 -1로 떄려박음 */}
-                <div className="reply_comment_inner_div">
-                    <div className="id">{props.nickname}</div>
-                    <div className='reply_comment_input_div'>
-                        <textarea className='reply_comment_input' name="comment" value={TextArea} placeholder="댓글을 남겨주세요" onChange={handleTextArea} />
+                // ChildCommentNumber > 0 && ( // 이 조건을 안주면 댓글삭제할때 뭔가 이상하게됨
+                    <div className="reply_comment_div" key="-1"> {/* key가 중복되서 -1로 떄려박음 */}
+                        <div className="reply_comment_inner_div">
+                            <div className="id">{props.nickname}</div>
+                            <div className='reply_comment_input_div'>
+                                <textarea className='reply_comment_input' name="comment" value={TextArea} placeholder="댓글을 남겨주세요" onChange={handleTextArea} />
+                            </div>
+                            <div className="comment_btn_div">
+                                <span className="comment_length">{TextLength} / 300</span>
+                                <button className="comment_btn btn" onClick={()=> {props.handleSubmitComment(TextArea, TextLength, props.board_idx, props.parentCommentId)}}>등록</button>
+                            </div>
+                        </div>
                     </div>
-                    <div className="comment_btn_div">
-                        <span className="comment_length">{TextLength} / 300</span>
-                            <button className="comment_btn btn" onClick={()=> {props.handleSubmitComment(TextArea, TextLength, props.board_idx, props.parentCommentId)}}>등록</button>
-                    </div>
-                </div>
-            </div>
+                // )
             )
-
+            
   
 
   
@@ -82,14 +86,23 @@ function Reply(props) {
     };
     return (
         <div>
-            {ChildCommentNumber > 0 && (
+            {ChildCommentNumber > 0 ?  (
                 <span
                     className="view_reply_more_btn"
                     onClick={onHandleChange}
                 >
                     View {ChildCommentNumber} more comment(s)
                 </span>
-            )}
+            )
+                :
+                <span
+                    className="view_reply_more_btn"
+                    onClick={onHandleChange}
+                >
+                    답글달기
+                </span>
+                
+            }
             {OpenReplyComments && renderReplyComment(props.parentCommentId)}
             {/*대댓글을 달때 눌리며 나오고 아니면숨긴상태*/}
         </div>

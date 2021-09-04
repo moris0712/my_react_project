@@ -222,6 +222,7 @@ app.post('/assign', function (req, res) {
 
 
 app.get('/board', function (req, res) {
+
     // 게시판 전체리스트
     var sql = 'SELECT rownum, idx, title, content, writer, ins_date, upd_date,hit '
     sql += 'FROM ( SELECT @rownum:=@rownum+1 AS rownum '
@@ -255,10 +256,11 @@ app.post('/board_comment', function (req, res) {
         sql += '(SELECT name FROM User WHERE idx = writer_idx) as writer, '
         sql += 'ins_date, upd_date, '
         sql += '(SELECT COUNT(*) FROM Board_recommend WHERE board_idx=? and comment_idx =idx) AS recommend, ' // 댓글 추천수
-        sql += '(SELECT EXISTS(SELECT * FROM Board_recommend WHERE comment_idx=idx and user_idx=?)) as isrecommend ' // 내가 댓글 추천했는지
+        sql += '(SELECT EXISTS(SELECT * FROM Board_recommend WHERE comment_idx=idx and user_idx=?)) as isrecommend, ' // 내가 댓글 추천했는지
+        sql += '( IF(writer_idx=?, '+true+','+false+')) AS ismine '
         sql += 'FROM Board_comment WHERE board_idx=? and isdelete=0 ' 
         sql += 'ORDER BY upd_date DESC '
-        conn.query(sql, [idx,req.session.user.idx,idx], function (error, results, fields) {
+        conn.query(sql, [idx, req.session.user.idx, req.session.user.idx,idx], function (error, results, fields) {
             if (error) throw error;
             else {
                 res.send(results);

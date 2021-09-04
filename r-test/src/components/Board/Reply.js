@@ -11,7 +11,7 @@ function Reply(props) {
     const [OpenReplyComments, setOpenReplyComments] = React.useState(false);
     const [TextArea, setTextArea] = React.useState('');
     const [TextLength, setTextLength] = React.useState(0);
-   
+
     React.useEffect(() => {
         let commentNumber = 0;
         props.commentList.map((comment, index) => {
@@ -21,6 +21,7 @@ function Reply(props) {
         });
         setChildCommentNumber(commentNumber);
     }, [props.commentList]); //commentList가 바뀔때마다 실행이될 수 있도록해야됨
+
 
     const handleTextArea = (event) => {
         setTextLength(props.getTextLength(event.currentTarget.value))
@@ -39,20 +40,27 @@ function Reply(props) {
                                 <div>{comment.writer}</div>
                                 <div>{new Date(comment.upd_date).toLocaleString()}</div>
                                 <div>{comment.comment}</div>
-                                <div className="comments_inner_div_footer">
-                                    <div>
+                                <div className={comment.ismine==true ? "comments_inner_div_footer" : ""} >
+
+                                        {comment.ismine==true  && (
+                                            <span className="comment_edit_delete_btn">
+                                                <button>수정</button>
+                                                <button>삭제</button>
+                                            </span>
+                                            )
+                                        }
+
                                         <span className="recommend_icon_div">
                                             <FavoriteOutlinedIcon className={comment.isrecommend ? "already_recommend_icon" : "recommend_icon"} onClick={() => props.handleRecommend(comment.isrecommend, props.board_idx, comment.idx)} />
                                             <span className="recommend_count">{comment.recommend}</span>
                                         </span>
-                                    </div>
                                 </div>
                             </span>
                         </div>
                     )}
                 </React.Fragment>
             )).concat(
-            <div className="reply_comment_div" key={parentCommentId}>
+            <div className="reply_comment_div" key="-1"> {/* key가 중복되서 -1로 떄려박음 */}
                 <div className="reply_comment_inner_div">
                     <div className="id">{props.nickname}</div>
                     <div className='reply_comment_input_div'>

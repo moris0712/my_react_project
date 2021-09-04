@@ -193,7 +193,7 @@ body{
     margin-left: 0.5em;
 }
 .comments_inner_div_footer{
-    margin-top: 1em !important;
+    margin-top: 2em !important;
 }
 
 .view_reply_more_btn{
@@ -244,3 +244,10 @@ body{
     border: none;
     overflow: hidden;
 }   
+
+
+
+.comment_edit_delete_btn :nth-child(1){
+    margin-right: 0.5em;
+
+}

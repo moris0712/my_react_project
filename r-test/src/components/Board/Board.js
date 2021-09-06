@@ -251,15 +251,12 @@ class Board extends Component {
                 .catch(err => {
                     console.error(err);
                 });
+            
 
             document.body.style.overflow = "hidden";
         }
-
         
     };
-
-
-
 
 
     handleClose = () => {
@@ -268,12 +265,13 @@ class Board extends Component {
     };
 
     No_result = () => { // 진짜..
-    return (
-        <TableRow className="TableRow" key="0">
-            <TableCell className="TableCell" colSpan='6' align="center">조건에 맞는 게시물이 존재하지않습니다.</TableCell>
-        </TableRow>
-    );
-}
+        return (
+            <TableRow className="TableRow" key="0">
+                <TableCell className="TableCell" colSpan='6' align="center">조건에 맞는 게시물이 존재하지않습니다.</TableCell>
+            </TableRow>
+        );
+    }
+
     render() {
 
         return (
@@ -371,7 +369,7 @@ class Board extends Component {
                 
 
                 <div className="btn_div">
-                    <button className="btn" >게시하기</button>
+                    <button className="btn" onClick={() => this.handleOpen()}>게시하기</button>
                 </div>
             </div>
         );

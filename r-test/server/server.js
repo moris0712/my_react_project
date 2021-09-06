@@ -283,6 +283,22 @@ app.post('/view_count', function (req, res) {
     });
 });
 
+app.post('/submit_board', function (req, res) {
+    // 댓글등록
+    var title = req.body.title;
+    var content = req.body.content;
+
+    conn.query('INSERT INTO Board(title, content, writer_idx) values(?, ?, ?)', [title, content, req.session.user.idx], function (error, results, fields) {
+        if (error) throw error;
+        else {
+            res.send(results);
+        }
+    });
+
+
+});
+
+
 
 
 app.post('/submit_comment', function (req, res) {

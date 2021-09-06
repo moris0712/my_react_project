@@ -11,11 +11,14 @@ class Modal extends Component {
 
         this.handleTextArea = this.handleTextArea.bind(this);
         this.handleSubmitComment = this.handleSubmitComment.bind(this);
+        // this.handleBoardInput = this.handleBoardInput.bind(this);
 
         this.state = {
             Board_Comment: '',
             textarea_length: 0,
-            textarea: ''
+            textarea: '',
+            title_input: '',
+            content_input: ''
         }; 
 
     }
@@ -26,7 +29,7 @@ class Modal extends Component {
 
 
     handleTextArea = (e) => {
-        
+
         this.setState({
             textarea_length: this.getTextLength(e.target.value),
             textarea: e.target.value
@@ -34,6 +37,41 @@ class Modal extends Component {
         // console.log(this.state.textarea_length);
     };
 
+    handleBoardInput = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+    }
+
+    handleSubmitBoard = () => {
+
+        if(this.state.title_input===''){
+            alert('제목을 입력해주세요');
+        }
+        else{
+            if (window.confirm('게시물을 등록하시겠습니까?')) {
+
+                // this.setState({
+                //     content_input: this.state.content_input.replace(/(?:\r\n|\r|\n)/g, '<br/>')
+                // }) // 개행문자 <br/>로 바꿔주기
+
+                axios({
+                    method: "post",
+                    url: 'http://localhost:3001/submit_board',
+                    data: {
+                        title: this.state.title_input,
+                        content: this.state.content_input
+                    }
+                })
+                    .then(res => {
+                        document.location.href = '/board';
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            }
+        }
+    }
 
 
     handleSubmitComment = (textarea,textarea_length,board_idx,parentcomment_idx) => {
@@ -144,78 +182,102 @@ class Modal extends Component {
     render(){
         return(
             <div className={this.props.open ? 'openModal modal' : 'modal'}>
-                {this.props.open ? (
-                    this.props.content && this.props.content.map( (content) =>{
-                        return(
-                            <section key={content.idx}>
-                                <header>
-                                    {content.title}
-                                    <button className="close" onClick={this.props.close}> &times; </button>
-                                    <div className="inform">
-                                        <p>작성자: {content.writer}</p>
-                                        <p><span className="date">게시일: {new Date(content.ins_date).toLocaleDateString()}</span><span className="date">마지막 수정일: {new Date(content.upd_date).toLocaleDateString()}</span> <span className="hit">조회수: {content.hit}</span> </p>
-                                    </div>
-                                </header>
-                                
-                                <main>
-                                    {content.content}
-                                    <div className="comment_div">
-                                        <div className="comment_count">{this.state.Board_Comment.length} Comment(s)</div>
-                                        <div className="comment_inner_div">
-                                            <div className="id">{this.props.nickname}</div>
-                                            <div className='comment_input_div'>
-                                                <textarea className='comment_input' name="comment" value={this.state.textarea} placeholder="댓글을 남겨주세요" onChange={this.handleTextArea}/>
-                                            </div>
-                                            <div className="comment_btn_div">
-                                                <span className="comment_length">{this.state.textarea_length} / 300</span>
-                                                <button className="comment_btn btn" onClick={()=> {this.handleSubmitComment(this.state.textarea,this.state.textarea_length,this.props.idx)}}>등록</button>
+                {this.props.open ? 
+                    this.props.idx!==undefined ?
+                        ( // 클릭한 게시물
+                        this.props.content && this.props.content.map( (content) =>{
+                            return(
+                                <section key={content.idx}>
+                                    <header>
+                                        {content.title}
+                                        <button className="close" onClick={this.props.close}> &times; </button>
+                                        <div className="inform">
+                                            <p>작성자: {content.writer}</p>
+                                            <p><span className="date">게시일: {new Date(content.ins_date).toLocaleDateString()}</span><span className="date">마지막 수정일: {new Date(content.upd_date).toLocaleDateString()}</span> <span className="hit">조회수: {content.hit}</span> </p>
+                                        </div>
+                                    </header>
+                                    
+                                    <main>
+                                        {/* {this.apply_enter(content.content)} */}
+                                        {content.content.split('\n').map((line, index) => {
+                                            return <div key={index}>{line}</div>
+                                        })}
+                                        <div className="comment_div">
+                                            <div className="comment_count">{this.state.Board_Comment.length} Comment(s)</div>
+                                            <div className="comment_inner_div">
+                                                <div className="id">{this.props.nickname}</div>
+                                                <div className='comment_input_div'>
+                                                    <textarea className='comment_input' name="comment" value={this.state.textarea} placeholder="댓글을 남겨주세요" onChange={this.handleTextArea}/>
+                                                </div>
+                                                <div className="comment_btn_div">
+                                                    <span className="comment_length">{this.state.textarea_length} / 300</span>
+                                                    <button className="comment_btn btn" onClick={()=> {this.handleSubmitComment(this.state.textarea,this.state.textarea_length,this.props.idx)}}>등록</button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="comments_div">
-                                        
-                                        { this.state.Board_Comment && 
-                                            this.state.Board_Comment.map( 
-                                                (comment, index) =>
-                                                    comment.parent_idx==0 && (
-                                                        <React.Fragment key={comment.idx}>
-                                                            <div className="comments_inner_div">
-                                                                <Comment
-                                                                    comment={comment}
-                                                                    board_idx={this.props.idx}
-                                                                    handleRecommend={this.handleRecommend}
-                                                                    comment_delete={this.comment_delete}
-                                                                />
-                                                                <Reply
-                                                                    key ={comment.idx}
-                                                                    commentList={this.state.Board_Comment}
-                                                                    parentCommentId={comment.idx}
-                                                                    board_idx={this.props.idx}
-                                                                    nickname={this.props.nickname}
-                                                                    handleSubmitComment={this.handleSubmitComment}
-                                                                    getTextLength={this.getTextLength}
-                                                                    handleRecommend={this.handleRecommend}
-                                                                    comment_delete={this.comment_delete}
-                                                                />
-                                                            </div>
-                                                        </React.Fragment>
+                                        <div className="comments_div">
+                                            
+                                            { this.state.Board_Comment && 
+                                                this.state.Board_Comment.map( 
+                                                    (comment, index) =>
+                                                        comment.parent_idx==0 && (
+                                                            <React.Fragment key={comment.idx}>
+                                                                <div className="comments_inner_div">
+                                                                    <Comment
+                                                                        comment={comment}
+                                                                        board_idx={this.props.idx}
+                                                                        handleRecommend={this.handleRecommend}
+                                                                        comment_delete={this.comment_delete}
+                                                                    />
+                                                                    <Reply
+                                                                        key ={comment.idx}
+                                                                        commentList={this.state.Board_Comment}
+                                                                        parentCommentId={comment.idx}
+                                                                        board_idx={this.props.idx}
+                                                                        nickname={this.props.nickname}
+                                                                        handleSubmitComment={this.handleSubmitComment}
+                                                                        getTextLength={this.getTextLength}
+                                                                        handleRecommend={this.handleRecommend}
+                                                                        comment_delete={this.comment_delete}
+                                                                    />
+                                                                </div>
+                                                            </React.Fragment>
+                                                        )
                                                     )
-                                                )
-                                        }
-                                    </div>
-                                </main>
+                                            }
+                                        </div>
+                                    </main>
 
 
 
-                                <footer>
-                                    <button className="close" onClick={this.props.close}> close </button>
-                                </footer>
-                            </section>
-                        );
-                    })
+                                    <footer>
+                                        <button className="close" onClick={this.props.close}> close </button>
+                                    </footer>
+                                </section>
+                            );
+                        })
+                    )
+                    : ( // 게시물 등록
+                        <section>
+                            <header>
+                                <textarea className='title_input' name="title_input" value={this.state.title_input} placeholder="제목을 입력해주세요" onChange={this.handleBoardInput} />
+                                <button className="close" onClick={this.props.close}> &times; </button>
+                            </header>
 
-                ) : null}
+                            <main>
+                                <textarea className='content_input' name="content_input" value={this.state.content_input} placeholder="본문을 작성해주세요" onChange={this.handleBoardInput} />
+                            </main>
+
+
+
+                            <footer className="modal_btn">
+                                <button className="enroll" onClick={this.handleSubmitBoard}> 게시하기 </button>
+                                <button className="close" onClick={this.props.close}> 취소하기 </button>
+                            </footer>
+                        </section>
+                    )
+                 : null}
             </div>
         )
     }

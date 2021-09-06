@@ -21,7 +21,7 @@ body{
 }
 .modal > section {  /* 모달 높이 60em 메인 높이 25em overflow:auto */
     width: 60em;
-    height: 60em;
+    /* height: 60em; */
     margin:0 auto;
     border-radius: .3rem;
     background-color: #fff;
@@ -58,12 +58,13 @@ body{
 .modal > section > main {
     font-size: 1.5em;
     height: 25em;
-    padding: 2em;
+    padding: 2em 2em 2em 2em ;
     border-bottom: 1px solid #dee2e6;
     border-top: 1px solid #dee2e6;
     overflow: auto;
 }
 .modal > section > footer {
+    margin-top: auto;
     padding: 1em 1em;
     text-align: right;
 }
@@ -250,5 +251,24 @@ body{
 }
 
 .comment_edit_delete_btn :nth-child(1){
+    margin-right: 0.5em;
+}
+
+
+.title_input , .content_input{
+    resize: none;
+    border: none;
+    overflow: hidden;
+}
+.title_input{
+    width: 25em;
+    font-size: 1em;
+    height: 1.5em;
+}
+.content_input{
+    height: 27em;
+    width: 38em;
+}   
+.modal_btn :nth-child(1){
     margin-right: 0.5em;
 }

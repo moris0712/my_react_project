@@ -359,27 +359,7 @@ app.post('/delete_comment', function (req, res) {
         }
     });
     
-    // else{ // 자식댓글 없앨때
-    //     conn.query('SELECT * FROM Board_comment WHERE board_idx=? and idx=?', [board_idx, comment_idx], function (error, results, fields) {
-    //         if (error) throw error;
-    //         else {
-    //             conn.query('INSERT INTO DEL_Board_comment SET ? ',[results[0]], function (error, results, fields) {
-    //                 if (error) throw error;
-    //                 else{
-    //                     console.log('댓글 삭제 보관 테이블로 이동');
-    //                 }
-    //             });
-    //             conn.query('DELETE FROM Board_comment WHERE board_idx =? and idx =?', [board_idx, comment_idx], function (error, results, fields) {
-    //                 if (error) throw error;
-    //                 else {
-    //                     console.log('댓글 삭제');
-    //                     res.send(results);
-    //                 }
-    //             });
 
-    //         }
-    //     });
-    // }
  
 });
 

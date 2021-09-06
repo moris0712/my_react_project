@@ -117,7 +117,12 @@ class Modal extends Component {
 
     comment_delete = (board_idx,comment_idx, parent_idx) => {
 
-        if(window.confirm('정말 댓글을 삭제하시겠습니까?')){
+        if(parent_idx===undefined)
+            var string = '댓글을 삭제할 경우 답글들도 삭제됩니다\n정말로 댓글을 삭제하시겠습니까?'
+        else
+            var string = '정말 댓글을 삭제하시겠습니까?'
+
+        if(window.confirm(string)){
             axios({
                 method: "post",
                 url: 'http://localhost:3001/delete_comment',
@@ -174,7 +179,7 @@ class Modal extends Component {
                                             this.state.Board_Comment.map( 
                                                 (comment, index) =>
                                                     comment.parent_idx==0 && (
-                                                        <React.Fragment key={index}>
+                                                        <React.Fragment key={comment.idx}>
                                                             <div className="comments_inner_div">
                                                                 <Comment
                                                                     comment={comment}
@@ -183,7 +188,7 @@ class Modal extends Component {
                                                                     comment_delete={this.comment_delete}
                                                                 />
                                                                 <Reply
-                                                                    key ={index}
+                                                                    key ={comment.idx}
                                                                     commentList={this.state.Board_Comment}
                                                                     parentCommentId={comment.idx}
                                                                     board_idx={this.props.idx}

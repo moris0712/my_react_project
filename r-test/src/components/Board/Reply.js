@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import './Modal.css';
-import axios from 'axios';
 import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
 import Arrow from '../../img/arrow.png'
 
@@ -20,11 +19,10 @@ function Reply(props) {
             }
         });
         setChildCommentNumber(commentNumber);
-        setOpenReplyComments(false);
         setTextArea('');
         setTextLength(0);
     }, [props.commentList]); //commentList가 바뀔때마다 실행이될 수 있도록해야됨
-
+    // 추천 할때는 변화없는데 댓글 
 
     const handleTextArea = (event) => {
         setTextLength(props.getTextLength(event.currentTarget.value))
@@ -44,7 +42,7 @@ function Reply(props) {
                                     {comment.ismine == true && (
                                         <span className="comment_edit_delete_btn">
                                             <button>수정</button>
-                                            <button onClick={() => props.comment_delete(props.board_idx, comment.idx)}>삭제</button>
+                                            <button onClick={() => props.comment_delete(props.board_idx, comment.idx, parentCommentId)}>삭제</button>
                                         </span>
                                         )
                                     }

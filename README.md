@@ -48,14 +48,29 @@ Database : Mysql
 
   - ## Salt
     - DB에 비밀번호를 그대로 집어넣지 않는다 -> 관리자 혹은 해커가 확인할 수 있고 악용할 수 있기때문
-    - 따라서 단방향으로 암호화가 가능하고 복호화가 불가능한 암호화가 필요
-    -   
-  
-  ![Salt](https://user-images.githubusercontent.com/22339727/174726215-36f16265-0b85-42a8-93fd-313a8d09d47b.png)
+    - 따라서 단방향으로 암호화가 가능하고 복호화가 불가능한 암호화가 필요 (비밀번호 찾기를 할때 원래 비밀번호를 알려주는 것이 아닌 재설정 하는 이유)
+    - 또한 같은 비밀번호를 암호화하였을때 값이 달라야하므로 임의의 문자열을 추가하여 암호화
+    ![Salt](https://user-images.githubusercontent.com/22339727/174726215-36f16265-0b85-42a8-93fd-313a8d09d47b.png)  
+    
+    암호화된 비밀번호  
+    ![비밀번호](https://user-images.githubusercontent.com/22339727/174729959-ee5b2f5b-8807-4713-909e-5feb2c31bb4b.png)
 
 + ## 로그인
    ![로그인](https://user-images.githubusercontent.com/22339727/174720811-bdb346f7-e35c-42cc-818d-55e2599a2e31.png)
   |한 항목이라도 입력하지 않았을 시|DB에 아이디가 없을 시|DB에 아이디가 있지만 비밀번호가 틀렸을 시|
   |:-:|:-:|:-:|
-  |![스크린샷 2022-06-21 오후 2 11 10](https://user-images.githubusercontent.com/22339727/174720882-df21cf9c-bb5b-4722-a24e-31110ad36c82.png)|![스크린샷 2022-06-21 오후 2 11 20](https://user-images.githubusercontent.com/22339727/174720889-5a9fe584-3f62-4597-9cd9-b9b0b49c9fc2.png)|![스크린샷 2022-06-21 오후 2 11 29](https://user-images.githubusercontent.com/22339727/174720894-04779f37-fd35-425a-887a-d28027bebf4f.png)|
-  ![login_logic](https://user-images.githubusercontent.com/22339727/174723066-3a8d5bf2-9881-4162-9d07-2a29f1d468d8.png)
+  |![스크린샷 2022-06-21 오후 2 11 10](https://user-images.githubusercontent.com/22339727/174720882-df21cf9c-bb5b-4722-a24e-31110ad36c82.png)|![스크린샷 2022-06-21 오후 2 11 20](https://user-images.githubusercontent.com/22339727/174720889-5a9fe584-3f62-4597-9cd9-b9b0b49c9fc2.png)|![스크린샷 2022-06-21 오후 2 11 29](https://user-images.githubusercontent.com/22339727/174720894-04779f37-fd35-425a-887a-d28027bebf4f.png)| ![login_logic](https://user-images.githubusercontent.com/22339727/174723066-3a8d5bf2-9881-4162-9d07-2a29f1d468d8.png) |  
+  
+  
+  - 로그인에 성공하면 서버에 세션 저장  
+  ![세션](https://user-images.githubusercontent.com/22339727/174730670-89046fda-ac77-477e-83ef-117122bdd0a3.png)  
+  ![세션저장](https://user-images.githubusercontent.com/22339727/174730820-79b6af66-f31d-4aae-9383-d89d4f969f0c.png)  
+  
+  - Sessions DB
+  ![세션 DB](https://user-images.githubusercontent.com/22339727/174731102-f4427829-c06f-4192-9349-10802de4ee4c.png)
+  
+  
+
++ ## 로그아웃
+  - 로그아웃시, 서버에 저장되어있는 세션 삭제  
+    ![로그아웃](https://user-images.githubusercontent.com/22339727/174732068-8badb83c-14a4-4018-bb52-d40b422aaf64.png)
